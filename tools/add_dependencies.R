@@ -1,3 +1,5 @@
+# Maintainer-only helpers (NOT loaded with the installed package).
+
 # --- Replacements for "tidyverse" ---
 usethis::use_package("dplyr", type = "Depends")
 usethis::use_package("tidyr", type = "Depends")
@@ -55,16 +57,16 @@ usethis::use_package("reticulate", type = "Depends")
 usethis::use_package("grDevices", type = "Depends")
 usethis::use_package("tools", type = "Depends")
 
-# --- Development Tools ---
-# Kept as Suggests because these are for BUILDING, not USING the package
+# --- Dev tools ---
 usethis::use_package("usethis", type = "Suggests")
 usethis::use_package("devtools", type = "Suggests")
 
-# --- New Dependencies (20260210) ---
+# --- Optional linkage helpers ---
 usethis::use_package("openxlsx", type = "Depends")
 usethis::use_package("readxl", type = "Depends")
 usethis::use_package("purrr", type = "Depends")
 usethis::use_package("dplyr", type = "Depends")
-usethis::use_package("tidygeocoder", type = "Depends") # For split_and_geocode
-usethis::use_package("tigris", type = "Depends")       # For county lookups
-usethis::use_package("stringdist", type = "Depends")   # For the FASTER matching logic
+usethis::use_package("tidygeocoder", type = "Depends")
+usethis::use_package("tigris", type = "Depends")
+usethis::use_package("stringdist", type = "Suggests")
+usethis::use_package("fuzzyjoin", type = "Suggests")

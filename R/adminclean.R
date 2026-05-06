@@ -381,10 +381,17 @@ calculate_edit_distance <- function(str1_vec, str2_vec, ignore_strings = NULL) {
 
 #' Vectorized TF-IDF weighted similarity score
 #'
+#' Splits strings on whitespace tokens, finds shared tokens, then sums inverse
+#' document frequency (\code{idf}) weights for those shared tokens across the Corpus
+#' built from unique rows in both vectors. Interpret it as corpus-specific word overlap,
+#' emphasizing words that occur in fewer phrases (distinct from contiguous-overlap /
+#' substring scores such as [\code{\link{count_consecutive_overlap}()}]). If you omit
+#' \code{tfidf_weights}, a vocabulary is inferred from unique entries in both vectors \emph{combined}.
+#'
 #' @param str1_vec A character vector.
 #' @param str2_vec A character vector.
-#' @param tfidf_weights Optional weights dataframe.
-#' @return A numeric vector of similarity scores.
+#' @param tfidf_weights Optional \code{data.frame} with columns \verb{word} and \verb{idf}.
+#' @return Numeric vector aligned with paired rows.
 #' @export
 #' @importFrom tibble tibble
 #' @importFrom dplyr mutate distinct count select rename n_distinct row_number

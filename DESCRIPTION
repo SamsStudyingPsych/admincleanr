@@ -1,66 +1,46 @@
 Package: admincleanr
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: Administrative Data Cleaning and Record Linkage Helpers
+Version: 0.1.1
 Authors@R: c(
-    person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
+    person("Samuel", "Barans",
+           email = "sam.a.barans@gmail.com",
+           role = c("aut", "cre"))
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Description: Helpers for messy administrative extracts: fuzzy string scoring,
+    ID hygiene, environment cleanup for large-session work in R, parquet/Excel I/O,
+    and quick exploratory plots toward reproducible linkage workflows.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
-Imports: 
-    magrittr
-URL: https://github.com/SamsStudyingPsych/dcy
-BugReports: https://github.com/SamsStudyingPsych/dcy/issues
-Suggests: 
-    devtools,
-    usethis
-Depends: 
+URL: https://github.com/SamsStudyingPsych/admincleanr
+BugReports: https://github.com/SamsStudyingPsych/admincleanr/issues
+Imports:
     arrow,
     data.table,
-    DBI,
     dplyr,
-    excel.link,
-    fastDummies,
-    ggbreak,
-    ggnewscale,
     ggplot2,
-    glue,
-    gmapsdistance,
-    googleway,
-    grDevices,
     gt,
-    Hmisc,
     janitor,
-    labelled,
     lubridate,
-    odbc,
+    magrittr,
     openxlsx,
-    osrm,
     progress,
-    psych,
     purrr,
     readxl,
-    reticulate,
     rlang,
     scales,
-    sf,
-    skimr,
     stringr,
     tibble,
-    tictoc,
-    tidygeocoder,
     tidyr,
-    tidytext,
-    tigris,
-    tinytable,
-    tools,
-    zipcodeR,
-    zoo
+    tools
+Depends:
+    R (>= 4.0)
+Suggests:
+    DBI,
+    devtools,
+    fuzzyjoin,
+    odbc,
+    stringdist,
+    usethis

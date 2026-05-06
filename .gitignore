@@ -5,3 +5,5 @@
 .httr-oauth
 .DS_Store
 .quarto
+*.zip
+_zip_extract_temp/

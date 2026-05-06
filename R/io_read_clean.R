@@ -1,0 +1,152 @@
+#' Read parquet and report last modified time
+#'
+#' Useful when pulling extracts from databases or scripts and you want quick
+#' provenance checks before merging.
+#'
+#' @param filepath Path to a `.parquet` file.
+#' @param ... Passed to [`arrow::read_parquet()`].
+#' @return A `data.frame`. Arrow tables are coerced with `as.data.frame()`.
+#' @export
+#' @examples
+#' \dontrun{
+#' att <- read_parquet_with_date("att_raw.parquet")
+#' }
+read_parquet_with_date <- function(filepath, ...) {
+  if (!length(filepath) || !nzchar(filepath)) {
+    stop("filepath must be a non-empty character string.")
+  }
+  if (!file.exists(filepath)) {
+    stop("The file path does not exist; check spelling and working directory: ", filepath)
+  }
+  mod_time <- file.info(filepath)$mtime
+  message(sprintf(
+    "File '%s' was last modified on: %s",
+    basename(filepath),
+    format(mod_time, "%Y-%m-%d %H:%M:%S")
+  ))
+  df <- arrow::read_parquet(filepath, ...)
+  if (inherits(df, "ArrowTabular") || inherits(df, "Table")) {
+    df <- as.data.frame(df)
+  }
+  df
+}
+
+
+#' Detect file type and read tabular data
+#'
+#' Paths are routed by lowercase extension:
+#' `.parquet` ([`arrow::read_parquet()`]), `.csv` / `.tsv` / `.txt` ([`data.table::fread()`]),
+#' `.xlsx` / `.xls` ([`readxl::read_excel()`]), `.rds` ([`readRDS()`]).
+#'
+#' @param path File path.
+#' @param ... Additional arguments passed to the reader (e.g. `sheet`, `sep`, `skip`).
+#' @return A `data.frame`.
+#' @export
+read_data_file <- function(path, ...) {
+  if (!is.character(path) || length(path) != 1L || !nzchar(path)) {
+    stop("path must be a single non-empty string.")
+  }
+  if (!file.exists(path)) {
+    stop("File does not exist: ", path)
+  }
+  ext <- tolower(tools::file_ext(path))
+  switch(ext,
+    "parquet" = {
+      df <- arrow::read_parquet(path, ...)
+      if (inherits(df, "ArrowTabular") || inherits(df, "Table")) df <- as.data.frame(df)
+      df
+    },
+    "csv" = ,
+    "tsv" = ,
+    "txt" = data.table::fread(path, ..., data.table = FALSE),
+    "xlsx" = ,
+    "xls" = readxl::read_excel(path, ...),
+    "rds" = {
+      dots <- list(...)
+      if (length(dots)) {
+        warning("... arguments are ignored for .rds files.")
+      }
+      readRDS(path)
+    },
+    stop("Unsupported extension '.", ext, "' for path: ", path)
+  )
+}
+
+
+#' Snake_case names and trim all character columns
+#'
+#' Applies [`janitor::clean_names()`] then trims whitespace on every character
+#' column (`base::trimws`, which handles Unicode spaces reasonably well).
+#'
+#' @param df A `data.frame` or tibble.
+#' @param ... Passed to [`janitor::clean_names()`].
+#' @return A cleaned `data.frame`.
+#' @export
+#' @importFrom dplyr mutate across
+#' @examples
+#' \dontrun{
+#' clients_raw %>%
+#'   clean_names_trim_ws() %>%
+#'   squish_character_columns()
+#' }
+clean_names_trim_ws <- function(df, ...) {
+  if (!is.data.frame(df)) {
+    stop("df must be a data.frame.")
+  }
+  out <- janitor::clean_names(df, ...)
+  out <- dplyr::mutate(out, dplyr::across(dplyr::where(is.character), trimws))
+  out
+}
+
+
+#' Collapse embedded newlines and squish whitespace in character columns
+#'
+#' Matches the pattern often needed after [`DBI::dbGetQuery()`] on text fields:
+#' normalize `\r`/`\n` to a single space, then [`stringr::str_squish()`].
+#'
+#' @param df A `data.frame`.
+#' @param collapse_newlines Logical. Replace runs of `\r`/`\n` with a single space.
+#' @return `df` with character columns normalized.
+#' @export
+#' @importFrom dplyr mutate across
+squish_character_columns <- function(df, collapse_newlines = TRUE) {
+  if (!is.data.frame(df)) {
+    stop("df must be a data.frame.")
+  }
+  dplyr::mutate(
+    df,
+    dplyr::across(dplyr::where(is.character), function(x) {
+      if (isTRUE(collapse_newlines)) {
+        x <- gsub("[\r\n]+", " ", x, perl = TRUE)
+      }
+      stringr::str_squish(x)
+    })
+  )
+}
+
+
+#' Parse `"h:mm AM/PM"` times to minutes since midnight
+#'
+#' @param time_str Character vector (e.g. `"1:30 PM"`).
+#' @return Numeric vector of minutes; `NA` where parsing fails.
+#' @export
+parse_time_to_mins <- function(time_str) {
+  if (!is.character(time_str)) time_str <- as.character(time_str)
+  parsed <- as.POSIXlt(strptime(time_str, format = "%I:%M %p", tz = "UTC"))
+  as.numeric(parsed$hour * 60L + parsed$min)
+}
+
+
+#' Minutes from Monday 00:00 to POSIX timestamp position in week
+#'
+#' Week starts Monday (\code{lubridate::wday(..., week_start = 1)}).
+#'
+#' @param ts POSIXct or POSIXlt vector.
+#' @return Numeric minutes from start of ISO-style week (Monday midnight).
+#' @export
+#' @importFrom lubridate as_datetime wday hour minute
+ts_to_weekly_mins <- function(ts) {
+  ts <- lubridate::as_datetime(ts)
+  days_in <- lubridate::wday(ts, week_start = 1) - 1L
+  days_in * 24 * 60 + lubridate::hour(ts) * 60 + lubridate::minute(ts)
+}

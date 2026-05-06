@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^fwdpackage\.zip$
+^PACKAGE DEV .*\.docx$
+^_zip_extract_temp$
