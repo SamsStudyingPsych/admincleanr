@@ -1,5 +1,9 @@
 #' Turn snake_case/dot.case column labels into readable Title Case (Excel-friendly)
 #'
+#' @section Limitations:
+#' Uses \code{tools::toTitleCase()}; acronyms or domain tokens may be split
+#' awkwardly—hand-rename sensitive headers if needed.
+#'
 #' @param obj A data frame or character vector (e.g. column names).
 #' @return If `obj` is a data frame, same structure with renamed
 #'   columns. If `obj` is a character vector, the transformed strings.
@@ -23,6 +27,14 @@ excelify_names <- function(obj) {
 #'
 #' Headers get bold/light-blue styling and auto-fit width. Saves to a timestamped path
 #' derived from `filepath`.
+#'
+#' @section Limitations:
+#' \itemize{
+#'   \item Applies styling to the data as given; very wide or long sheets may hit
+#'     Excel limits independently of R.
+#'   \item Timestamped path is derived from system time; reproducible builds should
+#'     record the returned path explicitly downstream.
+#' }
 #'
 #' @param df Data frame.
 #' @param filepath Base path for `.xlsx` output (timestamp is inserted before the extension).
@@ -69,6 +81,13 @@ export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
 
 
 #' Write multiple worksheets with simple professional styling
+#'
+#' @section Limitations:
+#' \itemize{
+#'   \item Skips non-dataframe list entries with a warning; does not validate sheet
+#'     name length or character rules beyond \code{openxlsx} defaults.
+#'   \item Same practical limits as [export_formatted_excel()] regarding workbook size.
+#' }
 #'
 #' @param filepath Base output path ending in `.xlsx` (timestamp is inserted).
 #' @param sheet_names Names for each worksheet.
@@ -133,6 +152,14 @@ save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list)
 #' an [`openxlsx`] workbook object created with [`openxlsx::createWorkbook()`] or loaded
 #' with [`openxlsx::loadWorkbook()`].
 #'
+#' @section Limitations:
+#' \itemize{
+#'   \item Styles a \strong{fixed} column window \code{1:max_cols}; real data wider
+#'     than \code{max_cols} will not be dressed or filtered unless you raise the cap.
+#'   \item Auto column width for many empty leading columns can still be imprecise—
+#'     verify layout in Excel for presentation-critical workbooks.
+#' }
+#'
 #' @param wb [`openxlsx`] Workbook object.
 #' @param max_cols Upper bound of columns to dress (covers cases where workbook metadata
 #'   does not encode width).
@@ -176,6 +203,10 @@ format_workbook_headers <- function(wb, max_cols = 200L) {
 
 #' Tab-delimited file helper for UTF-16LE dumps
 #'
+#' @section Limitations:
+#' Assumes tab separation and UTF-16LE; wrong \code{fileEncoding} produces garbage
+#' rows silently—spot-check against a known-good extract.
+#'
 #' @param file_path Path to `.txt`/`.tab` dumps from legacy tooling.
 #' @return `data.frame`
 #' @export
@@ -191,6 +222,10 @@ read_delim_utf16 <- function(file_path) {
 
 
 #' Rows where grouping column maps to multiple target values
+#'
+#' @section Limitations:
+#' Surfaces \emph{structural} inconsistencies only; business rules for one-to-one
+#' mappings are still yours to enforce.
 #'
 #' @param df input data.
 #' @param group_col grouping column (bare name).
@@ -210,6 +245,10 @@ mult_check <- function(df, group_col, target_col) {
 #'
 #' [`mr_file()`] reads files; keep this lightweight helper for scripting paths.
 #'
+#' @section Limitations:
+#' Picks purely by filesystem \verb{mtime} among files that are not \verb{.R/.Rmd/.Rproj};
+#' does not inspect file content or stabilize ties when timestamps tie.
+#'
 #' @param folder_path Directory to inspect.
 #' @return Full path (`character` length 1) or `character(0)` if nothing matches.
 #' @export
@@ -227,6 +266,10 @@ newest_data_file <- function(folder_path = ".") {
 
 
 #' Quickly coerce chosen columns with [`as.numeric()`]
+#'
+#' @section Limitations:
+#' \code{as.numeric} yields \verb{NA} for non-coercible text; coercion warnings are
+#' not customized here—validate critical identifiers before and after use.
 #'
 #' @export
 #' @importFrom dplyr mutate across

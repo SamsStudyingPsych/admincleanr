@@ -12,11 +12,35 @@
 #' Samples non-missing values (up to `sample_size` rows), evaluates each candidate
 #' `orders` string with [lubridate::parse_date_time()], and keeps the order that
 #' yields the fewest failed parses on that sample. The winning order is then
-#' applied to the full vector. This is meant for **exploration**; production
-#' pipelines should use explicit formats once known.
+#' applied to the full vector.
 #'
 #' Numeric vectors in a range typical of Excel serial days are coerced via an
 #' origin of `1899-12-30` when `excel_serial = TRUE`.
+#'
+#' @section Intended use:
+#' Ad hoc exploration and one-off extracts (see package \code{admincleanr_crunch}).
+#' Once formats are understood, encode them explicitly (see \code{admincleanr_pipe}
+#' roadmap and [lubridate::parse_date_time()] / SQL casting in production pipelines).
+#'
+#' @section Limitations:
+#' \itemize{
+#'   \item \strong{Ambiguous strings} (for example short year or day/month swaps) may
+#'     parse cleanly but still reflect the wrong calendar intent; lowering NA count
+#'     does not imply semantic correctness.
+#'   \item The \emph{best} order is chosen on a \strong{random sample} of non-empty rows
+#'     when there are more than \code{sample_size}; rare formats in the tail of the
+#'     file can be mis-ranked.
+#'   \item \strong{Ties} on the loss score default to the first matching order in
+#'     \code{orders}; extend or reorder \code{orders} if ISO (\code{ymd}-style)
+#'     should beat US (\code{mdy}) when scores match.
+#'   \item \strong{Time zones}: values are interpreted in \code{tz}; compare policy
+#'     with your source system. When the database returns already-typed date/time,
+#'     prefer those columns over re-parsing character.
+#'   \item \strong{Excel serial} detection uses a heuristic numeric range only; some
+#'     non-date numerics could be misclassified.
+#'   \item \strong{DST} and fractional-second behavior follow \code{lubridate}; this
+#'     function does not validate business-calendar rules (fiscal periods, etc.).
+#' }
 #'
 #' @param x Vector of input values (`character`, `Date`, `POSIXt`, or numeric for Excel).
 #' @param orders Character vector of `parse_date_time` order strings; defaults to a
@@ -124,6 +148,11 @@ coerce_best_datetime <- function(x,
 
 
 #' Apply [coerce_best_datetime()] to selected columns
+#'
+#' Applies the same heuristic independently to each listed column—formats may
+#' differ column to column but each column is scored in isolation (no joint model).
+#'
+#' @inheritSection coerce_best_datetime Limitations
 #'
 #' @param data A `data.frame`.
 #' @param cols Character vector of column names.

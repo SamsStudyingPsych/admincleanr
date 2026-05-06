@@ -1,5 +1,10 @@
 #' Placeholder until pipeline helpers migrate here
 #'
+#' @details
+#' This package intentionally ships almost no logic today; it namespaces the
+#' \dQuote{pipe} workflow story (explicit contracts, minimal dependencies) while
+#' implementations still live in \code{admincleanr}.
+#'
 #' @return `TRUE` invisibly.
 #' @export
 pipe_scaffold_message <- function() {

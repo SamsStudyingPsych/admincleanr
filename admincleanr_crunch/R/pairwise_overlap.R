@@ -14,8 +14,25 @@
 #'
 #' Builds a **similarity score** (Jaccard index on distinct value sets) for every
 #' pair of columns you list from `left` and `right`. Use it to **rank** plausible
-#' identifier or code columns when joining unfamiliar extracts. It is only a
-#' structural hint—validate keys out-of-band.
+#' identifier or code columns when joining unfamiliar extracts.
+#'
+#' @section Limitations:
+#' \itemize{
+#'   \item \strong{Not a primary key oracle.} High overlap can reflect chance (shared
+#'     status codes, generic categories) or linkage not appropriate for merges.
+#'     Always validate join logic with governance rules and relational design.
+#'   \item Values are compared as \strong{character strings} after \code{as.character};
+#'     \code{001} vs \code{1} diverge despite representing the same key in some
+#'     sources—normalize identifiers first if that matters.
+#'   \item \strong{Sampling:} when distinct counts exceed \code{max_distinct}, values
+#'     are subsampled independently per column—the reported Jaccard is approximate.
+#'   \item \strong{Computation:} cost is proportional to
+#'     \code{length(left_cols) * length(right_cols)}; wide cross-products on huge
+#'     tables can be slow—narrow candidate columns before running.
+#'   \item \strong{Privacy:} do not log or publish raw distinct values from protected
+#'     data; use for local exploration unless outputs are aggregated and approved
+#'     for release.
+#' }
 #'
 #' @param left,right Data frames.
 #' @param left_cols Column names in `left` to evaluate.

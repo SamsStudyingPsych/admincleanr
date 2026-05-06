@@ -6,6 +6,19 @@
 #' @details
 #' Install suggested packages: `install.packages(c("fuzzyjoin", "stringdist"))`.
 #'
+#' @section Limitations:
+#' \itemize{
+#'   \item Can return \strong{incorrect} row pairings when distances are small by
+#'     chance; always \strong{block} candidates in SQL first (date windows, program,
+#'     geography) before fuzzy joining large tables.
+#'   \item \strong{max_dist} is a behavior dial, not a correctness guarantee—tighten
+#'     it and inspect unmatched / multi-match counts.
+#'   \item **Performance:** cost grows with table sizes and key cardinality; very
+#'     loose `max_dist` on wide extracts can be slow or memory-heavy.
+#'   \item Multiple matches per left row are possible; downstream deduplication logic
+#'     is your responsibility.
+#' }
+#'
 #' @param x Left table (`data.frame`).
 #' @param y Right table (`data.frame`).
 #' @param by Named or unnamed column mapping; passed to [`fuzzyjoin::stringdist_left_join()`].

@@ -150,6 +150,11 @@ date_mean <- function(date_vector) {
 
 #' Remove all objects from an environment *except* specified objects and functions
 #'
+#' @section Limitations:
+#' \strong{Destructive}: easy to omit a needed object name and lose work—commit data
+#' to disk before calling in interactive sessions. Does not unload attached packages or
+#' clear loaded namespaces held elsewhere.
+#'
 #' @param ... Unquoted names of objects to keep.
 #' @param env The environment to clean. Defaults to .GlobalEnv.
 #' @return NULL. Side effect: removes objects.
@@ -326,6 +331,16 @@ na_if_true <- function(.data, ...) {
 
 #' Find the best (longest) substring match from an approved list
 #'
+#' @section Limitations:
+#' \itemize{
+#'   \item Considers only \strong{substring containment} after exact match; synonyms,
+#'     transposed tokens, or edit-distance neighbors outside substring logic are missed.
+#'   \item If several approved strings are substrings of \code{tc_name}, picks the
+#'     \strong{longest} match—which may not be semantically authoritative.
+#'   \item Not vectorized across many \code{tc_name} rows; call from \code{sapply}/\code{pmap}
+#'     or compose with linkage helpers deliberately.
+#' }
+#'
 #' @param tc_name A single string to be checked.
 #' @param approved_list A character vector of "approved" names.
 #' @return The matched string or original name.
@@ -349,6 +364,10 @@ find_best_match <- function(tc_name, approved_list) {
 
 #' Vectorized Longest Common Substring (LCS)
 #'
+#' @section Limitations:
+#' Character-level contiguous runs only; punctuation and casing affect scores.
+#' Computational cost scales with character counts—very long identifiers can be expensive.
+#'
 #' @param str1_vec A character vector.
 #' @param str2_vec A character vector.
 #' @param ignore_strings Vector of strings to remove before comparison.
@@ -364,6 +383,10 @@ count_consecutive_overlap <- function(str1_vec, str2_vec, ignore_strings = NULL)
 
 
 #' Vectorized Levenshtein (edit) distance
+#'
+#' @section Limitations:
+#' Uses \code{adist} per pair (via internal helper); quadratic string lengths can
+#' bottleneck huge vectors of long texts—pair down or sample when exploring.
 #'
 #' @param str1_vec A character vector.
 #' @param str2_vec A character vector.
@@ -387,6 +410,16 @@ calculate_edit_distance <- function(str1_vec, str2_vec, ignore_strings = NULL) {
 #' emphasizing words that occur in fewer phrases (distinct from contiguous-overlap /
 #' substring scores such as \code{\link{count_consecutive_overlap}}. If you omit
 #' \code{tfidf_weights}, a vocabulary is inferred from unique entries in both vectors \emph{combined}.
+#'
+#' @section Limitations:
+#' \itemize{
+#'   \item Scores are \strong{corpus-local}: running on a different batch changes IDF
+#'     weights, so absolute values are not comparable across unrelated runs.
+#'   \item Tokenizes on whitespace only; punctuation-attached tokens stay fused
+#'     (\code{foo,} vs \code{foo} differ).
+#'   \item High score means shared rare-ish tokens, not adjudicated entity equality—
+#'     combine with other signals (blocking keys, edit distance, review policy).
+#' }
 #'
 #' @param str1_vec A character vector.
 #' @param str2_vec A character vector.
@@ -424,6 +457,10 @@ calculate_tfidf_similarity <- function(str1_vec, str2_vec, tfidf_weights = NULL)
 
 
 #' Creates a publication-quality histogram
+#'
+#' @section Limitations:
+#' Requires a numeric-compatible column—non-numeric vectors error in \code{mean}/hist.
+#' Does not sanitize plot labels drawn from raw column names when sharing externally.
 #'
 #' @param df The dataframe.
 #' @param var_string The string name of the variable.
@@ -514,6 +551,16 @@ save_to_excel_multisheet <- function(filename, sheet_names, data_list) {
 #' @param folder_path A string specifying the path to the directory to search.
 #' @param ... Additional arguments passed to the underlying read function
 #'   (e.g., `sheet = "Sheet1"` for Excel files).
+#' @section Limitations:
+#' \itemize{
+#'   \item Sorts by modification time only—not by logical version or business keys;
+#'     wrong file can "win" if clocks or jobs reorder writes.
+#'   \item Ignores subdirectories; newest nested file is invisible unless you point
+#'     \code{folder_path} deeper.
+#'   \item \code{read.csv} path uses base R defaults (factor policy, etc.)—treat as
+#'     convenience, not strict CSV policy.
+#' }
+#'
 #' @return A data.frame containing the contents of the most recent file, or NULL
 #'   if the file format is not supported.
 #' @export
@@ -574,6 +621,11 @@ mr_file <- function(folder_path, ...) {
 }
 #' Cross Check Missing Data
 #'
+#' @section Limitations:
+#' Assumes \code{id_var} values align between tables as intended; type coercion
+#' (character vs numeric keys) can silently drop matches. Does not deduplicate
+#' \code{df2} rows when multiple reference rows share an ID.
+#'
 #' @param df1 Primary dataframe.
 #' @param df2 Reference dataframe.
 #' @param check_var Column to check for NAs in df1.
@@ -583,7 +635,7 @@ mr_file <- function(folder_path, ...) {
 #' @importFrom dplyr filter pull
 #' @examples
 #' \dontrun{
-#' cross_check_missing(df, addr_df, ADDR_LN1, PERS_ID)
+#' cross_check_missing(extract_tbl, lookup_tbl, check_var = field_a, id_var = person_key)
 #' }
 cross_check_missing <- function(df1, df2, check_var, id_var) {
   missing_ids <- df1 %>%
@@ -597,6 +649,10 @@ cross_check_missing <- function(df1, df2, check_var, id_var) {
 
 
 #' Clean IDs (Remove Leading Zeros)
+#'
+#' @section Limitations:
+#' Removing leading zeros can \strong{collide} distinct IDs that differ only by left
+#' padding; confirm your domain allows semantic zeros before applying wholesale.
 #'
 #' @param x Vector of IDs.
 #' @return Character vector.
@@ -649,6 +705,11 @@ safe_paste <- function(...) {
 
 
 #' Lazy Line Plot (Updated Style)
+#'
+#' @section Limitations:
+#' Opinionated defaults (\code{scale_y_continuous(limits = c(0, NA))}) can mislead
+#' when negative or non-count \code{y_var} values occur—override with standard
+#' \code{ggplot2} layers if needed.
 #'
 #' @param data Dataframe.
 #' @param x_var X variable.
