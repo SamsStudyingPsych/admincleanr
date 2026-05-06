@@ -41,6 +41,14 @@ admincleanr::admincleanr_training()
 
 Heuristics trade **CPU and ambiguity** for speed of iteration. **Pipe**-style code should name formats, keys, and transforms explicitly once you know them.
 
+### Linkage workflow: “blocking” vs “fuzzy in R”
+
+**Blocking** means using **exact** keys (or tight windows: date range + program + geography) in **SQL** so each record only competes against a **small** candidate set. You then bring **thousands or millions of candidate pairs** (not full cross-products) into R for similarity or fuzzy joins.
+
+**Fuzzy-heavy in R** means shipping **large** unmatched extracts and letting string distance or similarity run on wide sets. That can work for one-off exploration but scales poorly and is harder to audit.
+
+The question is only: *after you block, roughly how many rows or pairs are left?* That number guides settings like `max_dist` and whether a step belongs in **admincleanr_crunch** (explore) or **admincleanr_pipe** (controlled production pattern).
+
 ---
 
 ## 3. Core **admincleanr** flows
@@ -129,7 +137,17 @@ Typical pattern: one **DSN or TNS** per environment, **different `UID`/`PWD` or 
 ## 7. What belongs in the repo
 
 - Reusable **functions** and **generic** workflow notes.  
-- **Not** proprietary connection strings, field dictionaries, or record-level excerpts.
+- **Not** proprietary connection strings, full field dictionaries, or record-level excerpts.
+
+### Sharing workflow in public (agency-safe)
+
+Patterns that help **your** collaborators without weakening security:
+
+- **Good to share:** Statistical or structural workflows (push-down filtering, Parquet staging, validating row counts after refresh, generic “blocking then fuzzy match” sequencing), synthetic or obviously fake mini examples, lessons about ODBC/driver quirks **without** hostnames, service names, or account names.
+- **Avoid in public issues, gists, or chat logs:** Passwords, tokens, `UID`/`PWD`, full TNS/DSN strings, internal server or scan hostnames, schema maps that fingerprint a specific environment, real or deduplicated-looking **record-level** values (including “anonymized” IDs that are still stable keys), and screenshots of query results.
+- **Examples in docs:** Prefer abstract labels (`subject_key`, `encounter_dt`, `program_cd`) and narratives that fit **public-health or government administrative** data broadly—not names of systems, vendors, or programs tied to one agency.
+
+Public workflow notes are welcome when framed at that level; they make the package easier to teach without widening an attack surface.
 
 ---
 
