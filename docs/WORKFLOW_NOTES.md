@@ -8,6 +8,10 @@ Compressed summary of priorities discussed for **admincleanr** and surrounding p
 - **Sustainability:** Prefer plain R + standard packages; avoid IDE lock-in where possible (Positron today, transferable to RStudio/VSC-style setups).
 - **Compute:** Optimize for laptops (e.g. 64 GB RAM) against multi-million-row tables—stream with **SQL → Parquet/Arrow**, `rm()`, and `clean_but_keep()`, not monster `left_join`s in RAM when avoidable.
 
+## Repository layout
+
+The default install is **`admincleanr`**. **`admincleanr_crunch`** hosts heuristics meant for rapid exploration; **`admincleanr_pipe`** will collect lean, explicit parsers and checks as APIs settle. Multi-schema Oracle environments favour keeping connection details local while sharing only the R transformations that sit *after* extracts.
+
 ## Practical stack
 
 | Layer | Recommendation |

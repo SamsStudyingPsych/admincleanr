@@ -1,0 +1,23 @@
+Package: admincleanr_crunch
+Type: Package
+Title: Exploratory "Crunch-Time" Helpers for Administrative Data
+Version: 0.0.1
+Authors@R: c(
+    person("Samuel", "Barans",
+           email = "sam.a.barans@gmail.com",
+           role = c("aut", "cre"))
+  )
+Description: Heuristic helpers for ad hoc cleaning when formats and keys are unclear:
+    best-effort datetime parsing by scanning candidate orders; pairwise overlap
+    scores to suggest merge columns; intended for iterative analysis rather than
+    production pipelines.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
+URL: https://github.com/SamsStudyingPsych/admincleanr
+BugReports: https://github.com/SamsStudyingPsych/admincleanr/issues
+Imports:
+    lubridate
+Depends:
+    R (>= 4.0)

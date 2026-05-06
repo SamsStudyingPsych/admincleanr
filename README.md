@@ -9,6 +9,22 @@ Install from GitHub:
 devtools::install_github("SamsStudyingPsych/admincleanr")
 ```
 
+### Training (browser)
+
+```r
+library(admincleanr)
+admincleanr_training()  # opens docs/TRAINING.md on GitHub
+```
+
+Override the target URL if you fork the repo: `options(admincleanr.training_url = "https://github.com/<you>/<fork>/blob/main/docs/TRAINING.md")`.
+
+### Companion packages (same GitHub repo)
+
+- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
+  `devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
+- **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
+  `devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
+
 ## Staying up to date
 
 Re-run `install_github` whenever you pull changes from GitHub:

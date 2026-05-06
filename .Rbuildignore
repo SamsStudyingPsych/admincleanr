@@ -3,3 +3,5 @@
 ^fwdpackage\.zip$
 ^PACKAGE DEV .*\.docx$
 ^_zip_extract_temp$
+^admincleanr_crunch$
+^admincleanr_pipe$
