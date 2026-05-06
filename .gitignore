@@ -7,3 +7,6 @@
 .quarto
 *.zip
 _zip_extract_temp/
+
+# Local briefing / notes (may contain employer context; keep out of git)
+PACKAGE DEV*.docx
