@@ -385,7 +385,7 @@ calculate_edit_distance <- function(str1_vec, str2_vec, ignore_strings = NULL) {
 #' document frequency (\code{idf}) weights for those shared tokens across the Corpus
 #' built from unique rows in both vectors. Interpret it as corpus-specific word overlap,
 #' emphasizing words that occur in fewer phrases (distinct from contiguous-overlap /
-#' substring scores such as [\code{\link{count_consecutive_overlap}()}]). If you omit
+#' substring scores such as \code{\link{count_consecutive_overlap}}. If you omit
 #' \code{tfidf_weights}, a vocabulary is inferred from unique entries in both vectors \emph{combined}.
 #'
 #' @param str1_vec A character vector.
