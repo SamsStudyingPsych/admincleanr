@@ -9,17 +9,15 @@ Install from GitHub:
 devtools::install_github("SamsStudyingPsych/admincleanr")
 ```
 
-### Training (browser or IDE)
+### Training — copy-paste in RStudio / Positron
 
 ```r
 library(admincleanr)
-admincleanr_training()              # opens docs/TRAINING.md on GitHub (browser)
-admincleanr_training("local")       # opens bundled TRAINING.md in RStudio/Positron when supported
+admincleanr_training()         # browser → GitHub training page
+admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
 ```
 
-Override the browser URL if you fork the repo: `options(admincleanr.training_url = "https://github.com/<you>/<fork>/blob/main/docs/TRAINING.md")`.
-
-The same Markdown is kept in **`docs/TRAINING.md`** (source of truth on GitHub) and **`inst/doc/TRAINING.md`** (copied for installed help). When you edit training content, update both files together (or copy `docs` → `inst/doc` before release).
+Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
 ### Companion packages (same GitHub repo)
 
