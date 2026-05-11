@@ -19,6 +19,12 @@
 #'     is your responsibility.
 #' }
 #'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Apply **after SQL blocking** has shrunk candidate pairs—rescues typos in names or codes without a full Cartesian expansion in R.
+#'   \item See \code{\link{admincleanr_training}} for when to use similarity columns vs row-wise joins.
+#' }
+#'
 #' @param x Left table (`data.frame`).
 #' @param y Right table (`data.frame`).
 #' @param by Named or unnamed column mapping; passed to [`fuzzyjoin::stringdist_left_join()`].

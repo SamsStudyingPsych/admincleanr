@@ -14,6 +14,11 @@
 #' @param filepath Path to a `.parquet` file.
 #' @param ... Passed to [`arrow::read_parquet()`].
 #' @return A `data.frame`. Arrow tables are coerced with `as.data.frame()`.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Parquet ingest with provenance**: confirm you are reading the extract you think before merging—typical after scheduled SQL-to-Parquet jobs.
+#'   \item See \code{\link{admincleanr_training}} for staging and \code{\link{read_data_file}} when extension varies.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -60,6 +65,11 @@ read_parquet_with_date <- function(filepath, ...) {
 #' @param path File path.
 #' @param ... Additional arguments passed to the reader (e.g. `sheet`, `sep`, `skip`).
 #' @return A `data.frame`.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Single entry point** when analysts receive mixed file types (Parquet, CSV, xlsx) from the same workflow—reduces branching boilerplate in scripts.
+#'   \item See \code{\link{admincleanr_training}} for post-read cleaning (\code{\link{squish_character_columns}}).
+#' }
 #' @export
 read_data_file <- function(path, ...) {
   if (!is.character(path) || length(path) != 1L || !nzchar(path)) {
@@ -108,6 +118,11 @@ read_data_file <- function(path, ...) {
 #' @param df A `data.frame` or tibble.
 #' @param ... Passed to [`janitor::clean_names()`].
 #' @return A cleaned `data.frame`.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Run **immediately after** reading messy exports so downstream joins and documentation use stable, machine-safe column names plus trimmed text.
+#'   \item See \code{\link{admincleanr_training}} for SQL handoff patterns.
+#' }
 #' @export
 #' @importFrom dplyr mutate across
 #' @examples
@@ -142,6 +157,11 @@ clean_names_trim_ws <- function(df, ...) {
 #' @param df A `data.frame`.
 #' @param collapse_newlines Logical. Replace runs of `\r`/`\n` with a single space.
 #' @return `df` with character columns normalized.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Standard **post-SQL** normalization before joins or Parquet writes when text fields contain embedded line breaks.
+#'   \item See \code{\link{admincleanr_training}} for ordering with \code{\link{clean_names_trim_ws}}.
+#' }
 #' @export
 #' @importFrom dplyr mutate across
 squish_character_columns <- function(df, collapse_newlines = TRUE) {
@@ -173,6 +193,11 @@ squish_character_columns <- function(df, collapse_newlines = TRUE) {
 #'
 #' @param time_str Character vector (e.g. `"1:30 PM"`).
 #' @return Numeric vector of minutes; `NA` where parsing fails.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Convert **clock-only** survey or operations fields to a numeric axis for stacking with same-day timestamps or shift logic.
+#'   \item See \code{\link{admincleanr_training}} and \code{\link{ts_to_weekly_mins}} for combined time-position features.
+#' }
 #' @export
 parse_time_to_mins <- function(time_str) {
   if (!is.character(time_str)) time_str <- as.character(time_str)
@@ -195,6 +220,11 @@ parse_time_to_mins <- function(time_str) {
 #'
 #' @param ts POSIXct or POSIXlt vector.
 #' @return Numeric minutes from start of ISO-style week (Monday midnight).
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Align timestamps** to a common weekly offset for capacity or scheduling analytics when calendar week boundaries matter.
+#'   \item See \code{\link{admincleanr_training}} for datetime strategy (explicit vs heuristic).
+#' }
 #' @export
 #' @importFrom lubridate as_datetime wday hour minute
 ts_to_weekly_mins <- function(ts) {

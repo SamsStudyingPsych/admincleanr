@@ -42,6 +42,12 @@
 #'     function does not validate business-calendar rules (fiscal periods, etc.).
 #' }
 #'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Exploratory** pass on new string-date columns before you lock an explicit \code{parse_date_time} order in a production script (see \pkg{admincleanr_pipe} roadmap).
+#'   \item See \code{admincleanr::admincleanr_training()} for extract-to-report sequencing with the main package.
+#' }
+#'
 #' @param x Vector of input values (`character`, `Date`, `POSIXt`, or numeric for Excel).
 #' @param orders Character vector of `parse_date_time` order strings; defaults to a
 #'   compact US/EU/ISO-oriented menu.
@@ -153,6 +159,12 @@ coerce_best_datetime <- function(x,
 #' differ column to column but each column is scored in isolation (no joint model).
 #'
 #' @inheritSection coerce_best_datetime Limitations
+#'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Batch exploration** on several mystery string-date columns in one call before promoting per-column parsers into a validated pipeline.
+#'   \item See \code{admincleanr::admincleanr_training()} for when to stop using heuristics and fix formats explicitly.
+#' }
 #'
 #' @param data A `data.frame`.
 #' @param cols Character vector of column names.

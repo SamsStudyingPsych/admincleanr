@@ -34,6 +34,12 @@
 #'     for release.
 #' }
 #'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Rank candidate join keys** when receiving two unfamiliar extracts—narrows which columns deserve deeper validation or SQL-side blocking.
+#'   \item See \code{admincleanr::admincleanr_training()} for linkage sequencing with \pkg{admincleanr} similarity helpers after overlap hints.
+#' }
+#'
 #' @param left,right Data frames.
 #' @param left_cols Column names in `left` to evaluate.
 #' @param right_cols Column names in `right` to evaluate.

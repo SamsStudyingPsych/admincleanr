@@ -1,7 +1,7 @@
 Package: admincleanr_crunch
 Type: Package
 Title: Exploratory "Crunch-Time" Helpers for Administrative Data
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(
     person("Samuel", "Barans",
            email = "sam.a.barans@gmail.com",

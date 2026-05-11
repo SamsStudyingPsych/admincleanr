@@ -5,6 +5,12 @@
 #' \dQuote{pipe} workflow story (explicit contracts, minimal dependencies) while
 #' implementations still live in \code{admincleanr}.
 #'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Reserve this namespace for **production-hardened** transforms (explicit parsers, contract checks) as they are promoted out of exploratory scripts.
+#'   \item See \code{admincleanr::admincleanr_training()} for the planned split between \pkg{admincleanr_crunch} heuristics and pipe-stable code.
+#' }
+#'
 #' @return `TRUE` invisibly.
 #' @export
 pipe_scaffold_message <- function() {

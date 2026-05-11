@@ -7,6 +7,11 @@
 #' @param obj A data frame or character vector (e.g. column names).
 #' @return If `obj` is a data frame, same structure with renamed
 #'   columns. If `obj` is a character vector, the transformed strings.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Prepare **column labels** before stakeholder-facing Excel or memo tables.
+#'   \item See \code{\link{admincleanr_training}} and \code{\link{export_formatted_excel}}.
+#' }
 #' @export
 excelify_names <- function(obj) {
   if (is.data.frame(obj)) {
@@ -40,6 +45,11 @@ excelify_names <- function(obj) {
 #' @param filepath Base path for `.xlsx` output (timestamp is inserted before the extension).
 #' @param sheet_name Worksheet label.
 #' @return Invisibly, the written path (`character(1)`).
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **One-click styled handoff** after an analysis block—timestamped path avoids overwriting prior QA copies.
+#'   \item See \code{\link{admincleanr_training}} for multi-sheet variant.
+#' }
 #' @export
 export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
   export_df <- excelify_names(df)
@@ -93,6 +103,11 @@ export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
 #' @param sheet_names Names for each worksheet.
 #' @param data_list List of dataframes aligned with `sheet_names`.
 #' @return Invisibly, written path (`character(1)`).
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Package **multiple QA tables** (raw vs cleaned vs unmatched keys) for program staff in one workbook with consistent header styling.
+#'   \item See \code{\link{admincleanr_training}} for export vs \code{gt} table choice.
+#' }
 #' @export
 save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list) {
   if (length(sheet_names) != length(data_list)) {
@@ -164,6 +179,11 @@ save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list)
 #' @param max_cols Upper bound of columns to dress (covers cases where workbook metadata
 #'   does not encode width).
 #' @return `wb`, invisibly.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Apply a **consistent header look** to workbooks you did not create (legacy templates) before circulation.
+#'   \item See \code{\link{admincleanr_training}} for Excel vs Parquet staging norms.
+#' }
 #' @export
 format_workbook_headers <- function(wb, max_cols = 200L) {
   if (!inherits(wb, "Workbook")) {
@@ -209,6 +229,11 @@ format_workbook_headers <- function(wb, max_cols = 200L) {
 #'
 #' @param file_path Path to `.txt`/`.tab` dumps from legacy tooling.
 #' @return `data.frame`
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Legacy mainframe-style** tab exports that default readers mishandle—use at the ingest boundary then switch to standard tools.
+#'   \item See \code{\link{admincleanr_training}} for encoding caveats.
+#' }
 #' @export
 read_delim_utf16 <- function(file_path) {
   read.delim(
@@ -230,6 +255,11 @@ read_delim_utf16 <- function(file_path) {
 #' @param df input data.
 #' @param group_col grouping column (bare name).
 #' @param target_col column whose uniqueness within group must be flagged.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Integrity audit**: find IDs that map to conflicting category values before trusting one-to-many merges.
+#'   \item See \code{\link{admincleanr_training}} for join QA sequencing.
+#' }
 #' @export
 #' @importFrom dplyr group_by mutate ungroup filter n_distinct
 mult_check <- function(df, group_col, target_col) {
@@ -251,6 +281,11 @@ mult_check <- function(df, group_col, target_col) {
 #'
 #' @param folder_path Directory to inspect.
 #' @return Full path (`character` length 1) or `character(0)` if nothing matches.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Script glue when filenames include timestamps—grab the latest drop without hard-coding the string (then pass path to \code{\link{read_data_file}}).
+#'   \item See \code{\link{admincleanr_training}} vs \code{\link{mr_file}} when you also need automatic read.
+#' }
 #' @export
 newest_data_file <- function(folder_path = ".") {
   all_files <- list.files(folder_path, full.names = TRUE)
@@ -270,6 +305,12 @@ newest_data_file <- function(folder_path = ".") {
 #' @section Limitations:
 #' \code{as.numeric} yields \verb{NA} for non-coercible text; coercion warnings are
 #' not customized here—validate critical identifiers before and after use.
+#'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Quick **numeric typing** of selected columns after reading character-heavy CSV exports prior to modeling or joins.
+#'   \item See \code{\link{admincleanr_training}} for safer typed reads upstream when possible.
+#' }
 #'
 #' @export
 #' @importFrom dplyr mutate across

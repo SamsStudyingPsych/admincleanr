@@ -4,6 +4,11 @@
 #'
 #' @param x A vector.
 #' @return A single numeric value representing the count of unique elements.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Use early in **profiling** (keys, program codes, facility IDs) before joins or small-area summaries so cardinality surprises surface before heavy compute.
+#'   \item See \code{\link{admincleanr_training}} for how this fits the extract-to-report path (\code{where = "browser"} or \code{"local"} for the bundled training file).
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -20,6 +25,11 @@ lunique <- function(x){
 #'
 #' @param x A vector.
 #' @return A `table` object showing the frequency of frequencies.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Quick **distribution-of-distribution** check after categorization—useful before collapsing sparse levels or reporting frequencies.
+#'   \item See \code{\link{admincleanr_training}} for broader QA patterns.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -37,6 +47,11 @@ table2 <- function(x){
 #'
 #' @param x A vector.
 #' @return A `table` object with counts for `TRUE` (is NA) and `FALSE` (is not NA).
+#' @section Workflow integration:
+#' \itemize{
+#'   \item One-off **completeness** scan on a column before imputation or join rules.
+#'   \item See \code{\link{admincleanr_training}} for pairing with \code{\link{nable_pct}} and downstream cleaning.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -51,6 +66,11 @@ nable <- function(x){
 #'
 #' @param x A data.frame or tibble.
 #' @return NULL. This function prints its results to the console.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Whole-table NA audit** immediately after reading an extract—prioritize columns for \code{\link{cross_check_missing}}, coercion, or SQL fixes.
+#'   \item See \code{\link{admincleanr_training}} for staged cleaning after this step.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -69,6 +89,11 @@ nable_pct <- function(x){
 #' @param df A data.frame.
 #' @param ... One or more unquoted column names to be converted to Date.
 #' @return A data.frame with the specified columns mutated to Date.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item After you know **explicit** date fields and formats, batch-type columns for timeline joins and \code{\link{collapse_dates}}; prefer database-typed dates when available.
+#'   \item For unknown string formats during exploration, use \code{admincleanr_crunch::coerce_best_datetime_cols}; see \code{\link{admincleanr_training}}.
+#' }
 #' @export
 #' @importFrom dplyr mutate across
 #' @examples
@@ -86,6 +111,11 @@ mudate <- function(df, ...) {
 #' @param df A data.frame.
 #' @param condition A logical expression to filter by (passed to `filter()`).
 #' @return A filtered data.frame including rows matching the condition AND NA rows.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Keeps **unknown/missing** alongside a positive screen—typical for eligibility or consent flags where NA means “not assessed,” not “fail.”
+#'   \item See \code{\link{admincleanr_training}} for join and QA sequencing after filters.
+#' }
 #' @export
 #' @importFrom dplyr filter
 #' @examples
@@ -104,6 +134,11 @@ filter_w_na <- function(df, condition) {
 #'
 #' @param env The environment to search in. Defaults to the Global Environment.
 #' @return A character vector of function names.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Supports \code{\link{clean_but_keep}} by enumerating functions to retain; also handy before documenting a session or stripping ad hoc objects.
+#'   \item See \code{\link{admincleanr_training}} for memory-conscious workflows on large extracts.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -122,6 +157,11 @@ list_all_functions <- function(env = .GlobalEnv) {
 #'
 #' @param date_vector A vector of class `Date`.
 #' @return A list containing min, max, mean, and median dates.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Sanity-check** span and central tendency of enrollment or episode dates before aggregating or merging to external calendars.
+#'   \item See \code{\link{admincleanr_training}} for date handling alongside \code{\link{mudate}} / crunch heuristics.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -154,6 +194,12 @@ date_mean <- function(date_vector) {
 #' \strong{Destructive}: easy to omit a needed object name and lose work—commit data
 #' to disk before calling in interactive sessions. Does not unload attached packages or
 #' clear loaded namespaces held elsewhere.
+#'
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Run between **heavy extracts** so RAM is freed while keeping analysis tables and all functions—reduces session thrash on laptops processing large administrative pulls.
+#'   \item See \code{\link{admincleanr_training}} for pairing with Parquet handoffs and SQL-first blocking.
+#' }
 #'
 #' @param ... Unquoted names of objects to keep.
 #' @param env The environment to clean. Defaults to .GlobalEnv.
@@ -197,6 +243,11 @@ clean_but_keep <- function(..., env = .GlobalEnv) {
 #'
 #' @param objects_to_remove A character vector of object names to delete.
 #' @return NULL.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Targeted cleanup** of scratch objects between pipeline stages without the broad sweep of \code{\link{clean_but_keep}}.
+#'   \item See \code{\link{admincleanr_training}} for safe session hygiene patterns.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -215,6 +266,11 @@ rm_any_of <- function(objects_to_remove){
 #' @param .data A data.frame.
 #' @param ... One or more named expressions to be passed to `mutate()`.
 #' @return A data.frame with modified columns.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Use for **row-wise** derived fields (complex rules, per-row API-style logic) with visible progress on long administrative extracts.
+#'   \item See \code{\link{admincleanr_training}}—prefer vectorized \code{dplyr} when possible for speed; reserve this for genuinely row-heavy work.
+#' }
 #' @export
 #' @importFrom progress progress_bar
 #' @importFrom rlang enquos current_env quo_get_expr expr new_quosure
@@ -254,6 +310,11 @@ mutate_bar <- function(.data, ...) {
 #' @param .data The dataframe to modify.
 #' @param ... Column names to remove (bare or quoted).
 #' @return A data.frame with columns removed.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Drop **PII or legacy columns** before sharing a derived analytic table or writing to Parquet for collaborators.
+#'   \item See \code{\link{admincleanr_training}} for de-identification staging with SQL extracts.
+#' }
 #' @export
 #' @importFrom rlang enquos as_name
 #' @importFrom dplyr select any_of
@@ -275,6 +336,11 @@ select_out <- function(.data, ...) {
 #' @param var The unquoted name of the column to modify.
 #' @param condition A logical expression.
 #' @return A data.frame.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Encode **sentinel cleanup** (e.g. negative ages, placeholder codes) to NA before linkage or reporting.
+#'   \item See \code{\link{admincleanr_training}} and \code{\link{na_if_true}} for multi-column variants.
+#' }
 #' @export
 #' @importFrom dplyr mutate if_else summarise pull
 #' @importFrom rlang enquo
@@ -302,6 +368,11 @@ na_replace <- function(.data, var, condition) {
 #' @param .data The dataframe to modify.
 #' @param ... Named arguments: `column_name = condition`.
 #' @return A dataframe.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Batch sentinel** cleanup across several columns in one pass—streamlines pre-join hygiene on wide extracts.
+#'   \item See \code{\link{admincleanr_training}} for QA after coercion.
+#' }
 #' @export
 #' @importFrom rlang enquos sym
 #' @importFrom dplyr mutate if_else summarise pull
@@ -344,6 +415,11 @@ na_if_true <- function(.data, ...) {
 #' @param tc_name A single string to be checked.
 #' @param approved_list A character vector of "approved" names.
 #' @return The matched string or original name.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Map **noisy free-text** (e.g. provider or site names) to a curated reference list during linkage prep—combine with edit distance / TF-IDF columns for ranking.
+#'   \item See \code{\link{admincleanr_training}} for blocking before fuzzy matching at scale.
+#' }
 #' @export
 #' @importFrom stringr str_detect fixed
 #' @examples
@@ -372,6 +448,11 @@ find_best_match <- function(tc_name, approved_list) {
 #' @param str2_vec A character vector.
 #' @param ignore_strings Vector of strings to remove before comparison.
 #' @return A numeric vector of LCS lengths.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Add as a **feature column** when blocking has already narrowed candidate pairs—helps rank same-entity strings with punctuation drift.
+#'   \item See \code{\link{admincleanr_training}} for combining with \code{\link{calculate_edit_distance}} and TF-IDF.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -392,6 +473,11 @@ count_consecutive_overlap <- function(str1_vec, str2_vec, ignore_strings = NULL)
 #' @param str2_vec A character vector.
 #' @param ignore_strings Vector of strings to remove before comparison.
 #' @return A numeric vector of edit distances.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Standard **typo / transcription** signal in record-linkage feature tables; pair with blocking keys from SQL.
+#'   \item See \code{\link{admincleanr_training}} for when to prefer \code{\link{fuzzy_left_join_stringdist}} instead.
+#' }
 #' @export
 #' @examples
 #' \dontrun{
@@ -425,6 +511,11 @@ calculate_edit_distance <- function(str1_vec, str2_vec, ignore_strings = NULL) {
 #' @param str2_vec A character vector.
 #' @param tfidf_weights Optional \code{data.frame} with columns \verb{word} and \verb{idf}.
 #' @return Numeric vector aligned with paired rows.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Token-overlap** signal for entity-like strings within the current batch—useful after blocking narrows candidates; not a stand-alone merge key.
+#'   \item See \code{\link{admincleanr_training}} for interpreting scores next to LCS and edit distance.
+#' }
 #' @export
 #' @importFrom tibble tibble
 #' @importFrom dplyr mutate distinct count select rename n_distinct row_number
@@ -466,6 +557,11 @@ calculate_tfidf_similarity <- function(str1_vec, str2_vec, tfidf_weights = NULL)
 #' @param var_string The string name of the variable.
 #' @param binwidth_val Bin width.
 #' @return A ggplot object.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Fast distribution QA** after cleaning or imputation—shareable meeting charts without rebuilding ggplot from scratch each time.
+#'   \item See \code{\link{admincleanr_training}} for pairing with \code{\link{lazy_line}} for trend views.
+#' }
 #' @export
 #' @importFrom ggplot2 ggplot aes geom_histogram geom_text geom_vline annotate scale_x_continuous labs theme_minimal theme element_text element_blank element_rect after_stat
 #' @importFrom dplyr if_else
@@ -515,6 +611,11 @@ lazy_hist <- function(df, var_string, binwidth_val = 30) {
 #' @param sheet_names Vector of sheet names.
 #' @param data_list List of dataframes.
 #' @return NULL.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Minimal** multi-sheet handoff for ad hoc QA tables—use \code{\link{save_to_excel_multisheet_formatted}} when you need styled headers for stakeholders.
+#'   \item See \code{\link{admincleanr_training}} for export patterns after analysis.
+#' }
 #' @export
 #' @importFrom openxlsx createWorkbook addWorksheet writeData saveWorkbook
 #' @examples
@@ -563,16 +664,21 @@ save_to_excel_multisheet <- function(filename, sheet_names, data_list) {
 #'
 #' @return A data.frame containing the contents of the most recent file, or NULL
 #'   if the file format is not supported.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Drop-in read** when scheduled jobs land files in a known folder and you want the latest extract without hard-coding filenames.
+#'   \item Prefer \code{\link{read_data_file}} when you know the path; see \code{\link{admincleanr_training}} for staging extracts.
+#' }
 #' @export
 #' @importFrom tools file_ext
 #' @importFrom readxl read_excel
 #' @examples
 #' \dontrun{
 #' # Automatically find and read the newest file (e.g., a parquet file)
-#' placement_df <- mr_file("data/downloads")
+#' df <- mr_file("data/downloads")
 #'
 #' # specific sheet for xlsx
-#' placement_df <- mr_file("data/downloads", sheet = "Raw Data")
+#' df <- mr_file("data/downloads", sheet = "Raw Data")
 #' }
 mr_file <- function(folder_path, ...) {
   # 1. Find all files in the folder
@@ -631,6 +737,11 @@ mr_file <- function(folder_path, ...) {
 #' @param check_var Column to check for NAs in df1.
 #' @param id_var Common ID column.
 #' @return Dataframe of matching records from df2.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Diagnose join gaps**: pull reference rows for IDs where a key field is missing on the analytic table—speeds triage after a left join.
+#'   \item See \code{\link{admincleanr_training}} for SQL blocking and fuzzy follow-up.
+#' }
 #' @export
 #' @importFrom dplyr filter pull
 #' @examples
@@ -656,6 +767,11 @@ cross_check_missing <- function(df1, df2, check_var, id_var) {
 #'
 #' @param x Vector of IDs.
 #' @return Character vector.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Normalize **stringified IDs** before joins when leading zeros are not meaningful; confirm policy when zeros are significant.
+#'   \item See \code{\link{admincleanr_training}} for identifier hygiene in linkage.
+#' }
 #' @export
 #' @importFrom stringr str_remove
 #' @examples
@@ -675,6 +791,11 @@ clean_ids <- function(x) {
 #' @param data Dataframe.
 #' @param var Variable to sort by.
 #' @return Sorted dataframe.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Inspect most recent events** first (applications, encounters) during exploratory review or before rolling-window features.
+#'   \item See \code{\link{admincleanr_training}} for time-ordered QA patterns.
+#' }
 #' @export
 #' @importFrom dplyr arrange desc
 #' @examples
@@ -691,6 +812,11 @@ darange <- function(data, var) {
 #'
 #' @param ... Objects to paste.
 #' @return Character string.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Build **display or linkage keys** from multiple fields without literal \code{"NA"} artifacts from missing middle names or optional components.
+#'   \item See \code{\link{admincleanr_training}} for text cleanup before similarity scoring.
+#' }
 #' @export
 #' @importFrom dplyr coalesce
 #' @examples
@@ -718,6 +844,11 @@ safe_paste <- function(...) {
 #' @param x_lab X label.
 #' @param y_lab Y label.
 #' @return ggplot object.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Trend spot-check** for counts or rates over time after aggregation—useful in standing meetings or slide drafts.
+#'   \item See \code{\link{admincleanr_training}}; override scales when metrics are not non-negative counts.
+#' }
 #' @export
 #' @importFrom ggplot2 ggplot aes geom_line theme_minimal labs scale_y_continuous element_text theme
 #' @importFrom scales comma
@@ -742,6 +873,11 @@ lazy_line <- function(data, x_var, y_var, title = "Trend", x_lab = "X Axis", y_l
 #' @param rename_map Named vector for renaming columns.
 #' @param center_cols Vector of columns to center.
 #' @return gt table.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Produce **polished tables** for memos or appendices without hand-formatting each column in Excel.
+#'   \item See \code{\link{admincleanr_training}} for when to export to Excel instead.
+#' }
 #' @export
 #' @importFrom gt gt tab_header md cols_label opt_stylize cols_align
 #' @examples
@@ -844,6 +980,11 @@ lazy_table <- function(data,
 #' @param start_var The name of the start date column (unquoted).
 #' @param end_var The name of the end date column (unquoted).
 #' @return A data.frame with consecutive date ranges merged.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Collapse adjacent eligibility or enrollment spans** per person or unit after sorting—reduces double-counting in utilization summaries.
+#'   \item See \code{\link{admincleanr_training}} for date pipeline ordering with \code{\link{mudate}}.
+#' }
 #' @export
 #' @importFrom dplyr group_by arrange mutate lag ungroup summarize
 #' @importFrom rlang syms enquo
@@ -958,6 +1099,11 @@ update_workbook_val <- function(wb, find_val, replace_val) {
 #'   sheet names. If NULL (default), no ID column is created.
 #'
 #' @return A combined dataframe of all relevant sheets.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Stitch multi-tab Excel exports** (common from self-service query tools) while dropping a stray \verb{Query} sheet automatically.
+#'   \item See \code{\link{admincleanr_training}} for handoff from Excel to Parquet or SQL-first workflows.
+#' }
 #' @export
 #' @importFrom readxl excel_sheets read_excel
 #' @importFrom purrr map set_names
@@ -997,11 +1143,16 @@ read_sheets_exclude_query <- function(filepath, id_col = NULL) {
 #'
 #' @param .data A data.frame.
 #' @return A data.frame with renamed columns.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item **Human-readable column titles** right before sharing a table externally—pairs with Excel export helpers.
+#'   \item See \code{\link{admincleanr_training}}; for snake_case machine names prefer \code{\link{clean_names_trim_ws}} earlier in the pipeline.
+#' }
 #' @export
 #' @importFrom dplyr rename_with
 #' @examples
 #' \dontrun{
-#' placement_df %>% rename_formal()
+#' df %>% rename_formal()
 #' }
 rename_formal <- function(.data) {
   
