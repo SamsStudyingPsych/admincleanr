@@ -26,6 +26,10 @@
 #' @importFrom lubridate years months days weeks
 #' @importFrom lubridate make_date make_datetime
 #'
+# --- Database (ODBC) ---
+#' @importFrom DBI dbConnect dbDisconnect dbGetQuery dbWriteTable
+#' @importFrom odbc odbc
+#'
 # --- Excel & IO ---
 #' @importFrom readxl read_excel excel_sheets
 #' @importFrom openxlsx createWorkbook addWorksheet writeData saveWorkbook write.xlsx

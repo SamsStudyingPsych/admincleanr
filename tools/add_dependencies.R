@@ -1,6 +1,9 @@
 # Maintainer-only helpers (NOT loaded with the installed package).
 
 # --- Replacements for "tidyverse" ---
+# NOTE: The published package also lists the meta-package `tidyverse` in
+# DESCRIPTION Imports so `install_github` pulls the full stack; granular
+# @importFrom lines in R/imports.R remain the implementation detail.
 usethis::use_package("dplyr", type = "Depends")
 usethis::use_package("tidyr", type = "Depends")
 usethis::use_package("purrr", type = "Depends")
