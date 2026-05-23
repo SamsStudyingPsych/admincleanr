@@ -19,12 +19,25 @@
 #' admincleanr_attach_workbench()
 #' }
 admincleanr_attach_workbench <- function() {
+  workbench_packages <- c("tidyverse", "janitor", "readxl", "DBI", "odbc")
+  missing_packages <- workbench_packages[
+    !vapply(workbench_packages, requireNamespace, logical(1), quietly = TRUE)
+  ]
+
+  if (length(missing_packages) > 0) {
+    stop(
+      "Cannot attach admincleanr workbench package(s): ",
+      paste(missing_packages, collapse = ", "),
+      ". Reinstall admincleanr with dependencies, e.g. ",
+      "devtools::install_github(\"SamsStudyingPsych/admincleanr\", upgrade = \"always\").",
+      call. = FALSE
+    )
+  }
+
   suppressPackageStartupMessages({
-    library(tidyverse)
-    library(janitor)
-    library(readxl)
-    library(DBI)
-    library(odbc)
+    for (pkg in workbench_packages) {
+      library(pkg, character.only = TRUE)
+    }
   })
   invisible()
 }
