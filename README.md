@@ -6,7 +6,8 @@ Install from GitHub:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("SamsStudyingPsych/admincleanr")
+# install.packages("pak")
+pak::pak("SamsStudyingPsych/admincleanr")
 ```
 
 ### Training — copy-paste in RStudio / Positron
