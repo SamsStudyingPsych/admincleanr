@@ -42,6 +42,8 @@ Imports:
 Depends:
     R (>= 4.0)
 Suggests:
+    admincleanr_crunch,
+    admincleanr_pipe,
     devtools,
     fuzzyjoin,
     rstudioapi,

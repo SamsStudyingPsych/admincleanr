@@ -27,6 +27,14 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
 
+When installed, companion packages are auto-attached by `library(admincleanr)` so
+you can call their exported functions directly (no `admincleanr_crunch::` /
+`admincleanr_pipe::` prefix). Disable with:
+
+```r
+options(admincleanr.autoload_companions = FALSE)
+```
+
 ## Staying up to date
 
 Re-run `pak::pak` whenever you pull changes from GitHub:

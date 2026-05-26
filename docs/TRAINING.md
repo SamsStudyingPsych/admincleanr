@@ -114,7 +114,7 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
 
 ```r
-admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
+coerce_best_datetime(x, quiet = FALSE)
 ```
 
 `coerce_best_datetime_cols()` applies the same idea column-wise.
@@ -125,7 +125,7 @@ admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
 
 ## 5. Candidate keys when you are unsure
 
-`admincleanr_crunch::pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
+`pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
 
 If you use a different **matrix / ranking** method in-house, consider contributing it behind a generic name (no employer-specific labels in examples). The maintainer can wire it in once you share a sanitized pattern.
 
