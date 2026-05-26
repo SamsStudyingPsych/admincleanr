@@ -32,6 +32,14 @@ admincleanr::admincleanr_training()              # browser (GitHub-rendered)
 admincleanr::admincleanr_training("local")     # open bundled TRAINING.md in IDE when supported
 ```
 
+For day-to-day work, load the package once and use the helpers directly:
+
+```r
+library(admincleanr)
+```
+
+`library(admincleanr)` now auto-attaches the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`) unless you set `options(admincleanr.autoload_workbench = FALSE)` first.
+
 ---
 
 ## 2. Mental model: three layers
@@ -61,32 +69,32 @@ The question is only: *after you block, roughly how many rows or pairs are left?
 Database text often embeds newlines. Normalize before joins or Parquet:
 
 ```r
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 ```
 
 Column names from exports are often noisy; standardize and trim:
 
 ```r
-df <- df %>% admincleanr::clean_names_trim_ws()
+df <- df %>% clean_names_trim_ws()
 ```
 
 ### 3.2 Reading files by extension
 
 ```r
-admincleanr::read_data_file("extract.parquet")
-admincleanr::read_data_file("sheetful.xlsx", sheet = 1)
+read_data_file("extract.parquet")
+read_data_file("sheetful.xlsx", sheet = 1)
 ```
 
 ### 3.3 Memory and session safety
 
 ```r
-admincleanr::clean_but_keep(main_tbl, lookup_tbl)
+clean_but_keep(main_tbl, lookup_tbl)
 ```
 
 ### 3.4 Join debugging
 
 ```r
-admincleanr::cross_check_missing(df1, df2, check_var = problem_col, id_var = id_col)
+cross_check_missing(df1, df2, check_var = problem_col, id_var = id_col)
 ```
 
 ### 3.5 String similarity (explicit, not guessing)
@@ -102,7 +110,7 @@ Use **multiple** signals; they measure different things:
 Install `fuzzyjoin` and `stringdist`, then:
 
 ```r
-admincleanr::fuzzy_left_join_stringdist(left, right, by = "name", max_dist = 1)
+fuzzy_left_join_stringdist(left, right, by = "name", max_dist = 1)
 ```
 
 Tighten `max_dist` on big tables; consider blocking keys in SQL first.
