@@ -9,5 +9,10 @@
       silent = TRUE
     )
   }
+  if (interactive()) {
+    packageStartupMessage(
+      "admincleanr exports are attached; call helpers directly after library(admincleanr), e.g. clean_names_trim_ws(df)."
+    )
+  }
   invisible()
 }

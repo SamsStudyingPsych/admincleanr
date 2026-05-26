@@ -10,6 +10,14 @@ Install from this monorepo:
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")
 ```
 
+Attach once per session, then call the exported heuristics directly:
+
+```r
+library(admincleanr_crunch)
+coerce_best_datetime(x, quiet = FALSE)
+pairwise_column_overlap(left_tbl, right_tbl)
+```
+
 Main entry points:
 
 - `coerce_best_datetime()`, `coerce_best_datetime_cols()`
