@@ -25,7 +25,7 @@ odbc_connect_dsn <- function(dsn, uid = NULL, pwd = NULL, ...) {
   if (!is.null(pwd)) {
     args$pwd <- pwd
   }
-  do.call(DBI::dbConnect, c(list(odbc::odbc()), args))
+  do.call(dbConnect, c(list(odbc()), args))
 }
 
 
@@ -69,9 +69,9 @@ dsn_query <- function(dsn, query, uid = NULL, pwd = NULL, ..., .disconnect = TRU
   sql <- .read_sql_text(query)
   con <- odbc_connect_dsn(dsn, uid = uid, pwd = pwd, ...)
   if (isTRUE(.disconnect)) {
-    on.exit(DBI::dbDisconnect(con), add = TRUE)
+    on.exit(dbDisconnect(con), add = TRUE)
   }
-  DBI::dbGetQuery(con, sql)
+  dbGetQuery(con, sql)
 }
 
 
@@ -96,8 +96,8 @@ dsn_write_table <- function(dsn, data, name, uid = NULL, pwd = NULL, ...,
                             .disconnect = TRUE) {
   con <- odbc_connect_dsn(dsn, uid = uid, pwd = pwd, ...)
   if (isTRUE(.disconnect)) {
-    on.exit(DBI::dbDisconnect(con), add = TRUE)
+    on.exit(dbDisconnect(con), add = TRUE)
   }
-  DBI::dbWriteTable(con, name = name, value = data, row.names = FALSE, ...)
+  dbWriteTable(con, name = name, value = data, row.names = FALSE, ...)
   invisible(TRUE)
 }

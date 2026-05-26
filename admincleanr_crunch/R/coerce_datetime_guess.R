@@ -70,12 +70,12 @@ coerce_best_datetime <- function(x,
   if (inherits(x, "Date")) {
     return(switch(result,
       Date = x,
-      POSIXct = lubridate::as_datetime(x, tz = tz),
+      POSIXct = as_datetime(x, tz = tz),
       auto = x
     ))
   }
   if (inherits(x, "POSIXt")) {
-    px <- lubridate::as_datetime(x, tz = tz)
+    px <- as_datetime(x, tz = tz)
     if (identical(result, "Date")) {
       return(as.Date(px, tz = tz))
     }
@@ -88,7 +88,7 @@ coerce_best_datetime <- function(x,
     if (length(xn) && all(xn > 20000 & xn < 80000, na.rm = TRUE)) {
       out <- as.Date(as.numeric(x), origin = "1899-12-30")
       if (identical(result, "POSIXct")) {
-        return(lubridate::as_datetime(out, tz = tz))
+        return(as_datetime(out, tz = tz))
       }
       return(out)
     }
@@ -111,7 +111,7 @@ coerce_best_datetime <- function(x,
 
   for (ord in orders) {
     parsed <- suppressWarnings(
-      lubridate::parse_date_time(xsub, orders = ord, tz = tz, quiet = TRUE)
+      parse_date_time(xsub, orders = ord, tz = tz, quiet = TRUE)
     )
     loss <- sum(is.na(parsed))
     if (loss < best_loss) {
@@ -121,7 +121,7 @@ coerce_best_datetime <- function(x,
   }
 
   full <- suppressWarnings(
-    lubridate::parse_date_time(xc, orders = best_order, tz = tz, quiet = TRUE)
+    parse_date_time(xc, orders = best_order, tz = tz, quiet = TRUE)
   )
 
   if (!quiet) {
@@ -134,7 +134,7 @@ coerce_best_datetime <- function(x,
   }
 
   if (identical(result, "POSIXct")) {
-    return(lubridate::as_datetime(full, tz = tz))
+    return(as_datetime(full, tz = tz))
   }
   if (identical(result, "Date")) {
     return(as.Date(full, tz = tz))
@@ -147,7 +147,7 @@ coerce_best_datetime <- function(x,
   lt <- as.POSIXlt(full, tz = tz)
   has_time <- !is.na(full) & ((lt$hour + lt$min + lt$sec) > 0)
   if (any(has_time, na.rm = TRUE)) {
-    return(lubridate::as_datetime(full, tz = tz))
+    return(as_datetime(full, tz = tz))
   }
   as.Date(full, tz = tz)
 }

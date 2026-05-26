@@ -49,8 +49,8 @@ admincleanr_training <- function(where = c("browser", "local")) {
       rstudioapi::navigateToFile(path)
     } else {
       tryCatch(
-        utils::file.edit(path, title = "admincleanr training"),
-        error = function(e) utils::file.show(path, title = "admincleanr training")
+        file.edit(path, title = "admincleanr training"),
+        error = function(e) file.show(path, title = "admincleanr training")
       )
     }
     return(invisible(path))
@@ -60,6 +60,6 @@ admincleanr_training <- function(where = c("browser", "local")) {
     "admincleanr.training_url",
     default = "https://github.com/SamsStudyingPsych/admincleanr/blob/master/docs/TRAINING.md"
   )
-  utils::browseURL(url)
+  browseURL(url)
   invisible(url)
 }

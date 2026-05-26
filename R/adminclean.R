@@ -102,7 +102,7 @@ nable_pct <- function(x){
 #' }
 mudate <- function(df, ...) {
   df %>%
-    dplyr::mutate(dplyr::across(c(...), as.Date))
+    mutate(across(c(...), as.Date))
 }
 
 
@@ -125,7 +125,7 @@ mudate <- function(df, ...) {
 #' }
 filter_w_na <- function(df, condition) {
   out <- df %>%
-    dplyr::filter({{ condition }} | is.na({{ condition }}))
+    filter({{ condition }} | is.na({{ condition }}))
   return(out)
 }
 
@@ -219,8 +219,8 @@ clean_but_keep <- function(..., env = .GlobalEnv) {
   }
   
   # 2. Capture the unquoted names you want to keep
-  keep_vars <- rlang::enquos(...) %>%
-    purrr::map_chr(rlang::quo_name)
+  keep_vars <- enquos(...) %>%
+    map_chr(quo_name)
   
   # 3. Get all functions (using internal helper logic or the function itself)
   # We use the robust logic directly here to ensure stability within this function
@@ -281,26 +281,26 @@ rm_any_of <- function(objects_to_remove){
 #'   mutate_bar(new_col = complex_calculation(col1))
 #' }
 mutate_bar <- function(.data, ...) {
-  pb <- progress::progress_bar$new(
+  pb <- progress_bar$new(
     format = "  Processing [:bar] :percent | ETA: :eta",
     total = nrow(.data), clear = FALSE, width = 60
   )
-  expressions <- rlang::enquos(...)
-  calling_env <- rlang::current_env()
+  expressions <- enquos(...)
+  calling_env <- current_env()
   
   if (length(expressions) > 0) {
-    first_expr_code <- rlang::quo_get_expr(expressions[[1]])
-    new_code_block <- rlang::expr({
+    first_expr_code <- quo_get_expr(expressions[[1]])
+    new_code_block <- expr({
       pb$tick()
       !!first_expr_code
     })
-    expressions[[1]] <- rlang::new_quosure(new_code_block, env = calling_env)
+    expressions[[1]] <- new_quosure(new_code_block, env = calling_env)
   }
   
   result <- .data %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(!!!expressions) %>%
-    dplyr::ungroup()
+    rowwise() %>%
+    mutate(!!!expressions) %>%
+    ungroup()
   return(result)
 }
 
@@ -323,10 +323,10 @@ mutate_bar <- function(.data, ...) {
 #' df %>% select_out(temp_id, "legacy_code")
 #' }
 select_out <- function(.data, ...) {
-  cols_to_remove_quos <- rlang::enquos(...)
-  cols_to_remove_strings <- sapply(cols_to_remove_quos, rlang::as_name)
+  cols_to_remove_quos <- enquos(...)
+  cols_to_remove_strings <- sapply(cols_to_remove_quos, as_name)
   .data %>%
-    dplyr::select(-dplyr::any_of(cols_to_remove_strings))
+    select(-any_of(cols_to_remove_strings))
 }
 
 
@@ -349,17 +349,17 @@ select_out <- function(.data, ...) {
 #' df %>% na_replace(age, age < 0)
 #' }
 na_replace <- function(.data, var, condition) {
-  condition_quo <- rlang::enquo(condition)
-  var_quo <- rlang::enquo(var)
+  condition_quo <- enquo(condition)
+  var_quo <- enquo(var)
   
   is_col_numeric <- .data %>%
-    dplyr::summarise(is_numeric = is.numeric({{ var_quo }})) %>%
-    dplyr::pull(is_numeric)
+    summarise(is_numeric = is.numeric({{ var_quo }})) %>%
+    pull(is_numeric)
   
   na_type <- if (is_col_numeric) NA_real_ else NA_character_
   
   .data %>%
-    dplyr::mutate("{{var_quo}}" := dplyr::if_else(!!condition_quo, na_type, {{var_quo}}))
+    mutate("{{var_quo}}" := if_else(!!condition_quo, na_type, {{var_quo}}))
 }
 
 
@@ -381,20 +381,20 @@ na_replace <- function(.data, var, condition) {
 #' df %>% na_if_true(age = age < 0, income = income == 99999)
 #' }
 na_if_true <- function(.data, ...) {
-  expressions <- rlang::enquos(...)
+  expressions <- enquos(...)
   vars_to_mutate <- names(expressions)
   data_mutated <- .data
   
   for (i in seq_along(expressions)) {
-    var_quo <- rlang::sym(vars_to_mutate[i])
+    var_quo <- sym(vars_to_mutate[i])
     condition_quo <- expressions[[i]]
     is_col_numeric <- data_mutated %>%
-      dplyr::summarise(is_numeric = is.numeric({{ var_quo }})) %>%
-      dplyr::pull(is_numeric)
+      summarise(is_numeric = is.numeric({{ var_quo }})) %>%
+      pull(is_numeric)
     na_type <- if (is_col_numeric) NA_real_ else NA_character_
     
     data_mutated <- data_mutated %>%
-      dplyr::mutate("{{var_quo}}" := dplyr::if_else(!!condition_quo, na_type, {{ var_quo }}))
+      mutate("{{var_quo}}" := if_else(!!condition_quo, na_type, {{ var_quo }}))
   }
   return(data_mutated)
 }
@@ -428,7 +428,7 @@ na_if_true <- function(.data, ...) {
 #' }
 find_best_match <- function(tc_name, approved_list) {
   if (tc_name %in% approved_list) return(tc_name)
-  substring_matches <- approved_list[stringr::str_detect(tc_name, stringr::fixed(approved_list))]
+  substring_matches <- approved_list[str_detect(tc_name, fixed(approved_list))]
   if (length(substring_matches) == 0) {
     return(tc_name)
   } else {
@@ -528,20 +528,20 @@ calculate_tfidf_similarity <- function(str1_vec, str2_vec, tfidf_weights = NULL)
   if (is.null(tfidf_weights)) {
     corpus_vector <- unique(c(str1_vec, str2_vec))
     corpus_vector <- corpus_vector[!is.na(corpus_vector)]
-    all_words_df <- tibble::tibble(raw_text = corpus_vector) %>%
-      dplyr::mutate(doc_id = dplyr::row_number()) %>%
-      dplyr::mutate(word_list = strsplit(tolower(raw_text), "\\s+")) %>%
-      tidyr::unnest(word_list) %>%
-      dplyr::rename(word = word_list)
+    all_words_df <- tibble(raw_text = corpus_vector) %>%
+      mutate(doc_id = row_number()) %>%
+      mutate(word_list = strsplit(tolower(raw_text), "\\s+")) %>%
+      unnest(word_list) %>%
+      rename(word = word_list)
     
     tfidf_weights <- all_words_df %>%
-      dplyr::distinct(doc_id, word) %>%
-      dplyr::count(word, name = "n_docs") %>%
-      dplyr::mutate(
-        total_docs = dplyr::n_distinct(all_words_df$doc_id),
+      distinct(doc_id, word) %>%
+      count(word, name = "n_docs") %>%
+      mutate(
+        total_docs = n_distinct(all_words_df$doc_id),
         idf = log(total_docs / n_docs)
       ) %>%
-      dplyr::select(word, idf)
+      select(word, idf)
   }
   mapply(.tfidf_score_scalar, str1_vec, str2_vec, MoreArgs = list(tfidf_weights = tfidf_weights))
 }
@@ -576,31 +576,31 @@ lazy_hist <- function(df, var_string, binwidth_val = 30) {
   max_val <- ceiling(max(df[[var_string]], na.rm = TRUE) / binwidth_val) * binwidth_val
   x_breaks <- seq(from = min_val, to = max_val, by = binwidth_val/2)
   
-  ggplot2::ggplot(df, ggplot2::aes(x = .data[[var_string]])) +
-    ggplot2::geom_histogram(binwidth = binwidth_val, fill = "#4e79a7", color = "white", alpha = 0.9) +
-    ggplot2::geom_text(
+  ggplot(df, aes(x = .data[[var_string]])) +
+    geom_histogram(binwidth = binwidth_val, fill = "#4e79a7", color = "white", alpha = 0.9) +
+    geom_text(
       stat = "bin",
-      ggplot2::aes(label = ggplot2::after_stat(dplyr::if_else(count > 0, as.character(count), ""))),
+      aes(label = after_stat(if_else(count > 0, as.character(count), ""))),
       binwidth = binwidth_val, vjust = 1.5, color = "white", size = 3.5
     ) +
-    ggplot2::geom_vline(xintercept = mean_val, color = "#e15759", linetype = "dashed", linewidth = 1) +
-    ggplot2::annotate("text", x = mean_val, y = Inf, label = paste("Mean =", round(mean_val, 1)), vjust = 1.5, hjust = -0.1, color = "#e15759", size = 4) +
-    ggplot2::scale_x_continuous(breaks = x_breaks) +
-    ggplot2::labs(
-      title = paste("Distribution of", tools::toTitleCase(var_string)),
+    geom_vline(xintercept = mean_val, color = "#e15759", linetype = "dashed", linewidth = 1) +
+    annotate("text", x = mean_val, y = Inf, label = paste("Mean =", round(mean_val, 1)), vjust = 1.5, hjust = -0.1, color = "#e15759", size = 4) +
+    scale_x_continuous(breaks = x_breaks) +
+    labs(
+      title = paste("Distribution of", toTitleCase(var_string)),
       subtitle = "Frequency distribution with mean indicated by the dashed line",
-      x = tools::toTitleCase(var_string), y = "Frequency (Count)"
+      x = toTitleCase(var_string), y = "Frequency (Count)"
     ) +
-    ggplot2::theme_minimal(base_size = 14) +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(hjust = 0.5, face = "bold", size = 18),
-      plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 12),
-      axis.title = ggplot2::element_text(face = "bold"),
-      panel.grid.major.x = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      plot.background = ggplot2::element_rect(fill = "#f5f5f5", color = NA),
-      panel.background = ggplot2::element_rect(fill = "#f5f5f5", color = NA),
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    theme_minimal(base_size = 14) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 18),
+      plot.subtitle = element_text(hjust = 0.5, size = 12),
+      axis.title = element_text(face = "bold"),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.background = element_rect(fill = "#f5f5f5", color = NA),
+      panel.background = element_rect(fill = "#f5f5f5", color = NA),
+      axis.text.x = element_text(angle = 45, hjust = 1)
     )
 }
 
@@ -625,13 +625,13 @@ lazy_hist <- function(df, var_string, binwidth_val = 30) {
 save_to_excel_multisheet <- function(filename, sheet_names, data_list) {
   if (length(sheet_names) != length(data_list)) stop("Error: The number of sheet names must equal the number of dataframes.")
   if (!is.list(data_list) || is.data.frame(data_list)) stop("Error: 'data_list' must be a list of dataframes.")
-  wb <- openxlsx::createWorkbook()
+  wb <- createWorkbook()
   for (i in 1:length(data_list)) {
-    openxlsx::addWorksheet(wb, sheetName = sheet_names[i])
-    openxlsx::writeData(wb, sheet = sheet_names[i], x = data_list[[i]])
+    addWorksheet(wb, sheetName = sheet_names[i])
+    writeData(wb, sheet = sheet_names[i], x = data_list[[i]])
   }
   tryCatch({
-    openxlsx::saveWorkbook(wb, file = filename, overwrite = TRUE)
+    saveWorkbook(wb, file = filename, overwrite = TRUE)
     cat(paste("Excel file '", filename, "' created successfully.\n", sep=""))
   }, error = function(e) cat(paste("Error saving file '", filename, "': ", e$message, "\n", sep="")))
 }
@@ -700,7 +700,7 @@ mr_file <- function(folder_path, ...) {
   
   # 3. Identify the most recently modified file
   most_recent_path <- rownames(file_only_details)[which.max(file_only_details$mtime)]
-  file_extension <- tolower(tools::file_ext(most_recent_path))
+  file_extension <- tolower(file_ext(most_recent_path))
   
   message(paste("Reading most recent file:", basename(most_recent_path)))
   
@@ -711,14 +711,14 @@ mr_file <- function(folder_path, ...) {
     
   } else if (file_extension == "xlsx") {
     # Requires readxl
-    return(readxl::read_excel(most_recent_path, ...))
+    return(read_excel(most_recent_path, ...))
     
   } else if (file_extension == "parquet") {
     # Check for arrow package availability
     if (!requireNamespace("arrow", quietly = TRUE)) {
       stop("The 'arrow' package is needed for parquet files. Please install it with install.packages('arrow').")
     }
-    return(arrow::read_parquet(most_recent_path, ...))
+    return(read_parquet(most_recent_path, ...))
     
   } else {
     warning(paste("Most recent file has unsupported extension:", file_extension))
@@ -750,11 +750,11 @@ mr_file <- function(folder_path, ...) {
 #' }
 cross_check_missing <- function(df1, df2, check_var, id_var) {
   missing_ids <- df1 %>%
-    dplyr::filter(is.na({{ check_var }})) %>%
-    dplyr::pull({{ id_var }}) %>%
+    filter(is.na({{ check_var }})) %>%
+    pull({{ id_var }}) %>%
     unique()
   result <- df2 %>%
-    dplyr::filter({{ id_var }} %in% missing_ids)
+    filter({{ id_var }} %in% missing_ids)
   return(result)
 }
 
@@ -781,7 +781,7 @@ cross_check_missing <- function(df1, df2, check_var, id_var) {
 clean_ids <- function(x) {
   x %>%
     as.character() %>%
-    stringr::str_remove("^0+") %>%
+    str_remove("^0+") %>%
     trimws()
 }
 
@@ -804,7 +804,7 @@ clean_ids <- function(x) {
 #' }
 darange <- function(data, var) {
   data %>%
-    dplyr::arrange(dplyr::desc({{ var }}))
+    arrange(desc({{ var }}))
 }
 
 
@@ -825,7 +825,7 @@ darange <- function(data, var) {
 #' }
 safe_paste <- function(...) {
   dots <- list(...)
-  clean_dots <- lapply(dots, function(x) dplyr::coalesce(as.character(x), ""))
+  clean_dots <- lapply(dots, function(x) coalesce(as.character(x), ""))
   do.call(paste0, clean_dots)
 }
 
@@ -858,12 +858,12 @@ safe_paste <- function(...) {
 #' }
 lazy_line <- function(data, x_var, y_var, title = "Trend", x_lab = "X Axis", y_lab = "Y Axis") {
   data %>%
-    ggplot2::ggplot(ggplot2::aes(x = {{ x_var }}, y = {{ y_var }})) +
-    ggplot2::geom_line(color = "red", linewidth = 1.2) +
-    ggplot2::scale_y_continuous(labels = scales::comma, limits = c(0, NA)) +
-    ggplot2::labs(title = title, x = x_lab, y = y_lab) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 45, hjust = 1))
+    ggplot(aes(x = {{ x_var }}, y = {{ y_var }})) +
+    geom_line(color = "red", linewidth = 1.2) +
+    scale_y_continuous(labels = comma, limits = c(0, NA)) +
+    labs(title = title, x = x_lab, y = y_lab) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(angle = 45, hjust = 1))
 }
 
 #' Lazy Table (gt Style 6)
@@ -888,16 +888,16 @@ lazy_table <- function(data,
                        title = "Table Overview",
                        rename_map = NULL,
                        center_cols = NULL) {
-  tbl <- gt::gt(data) %>%
-    gt::tab_header(title = gt::md(title)) %>%
-    gt::opt_stylize(style = 6, color = "blue")
+  tbl <- gt(data) %>%
+    tab_header(title = md(title)) %>%
+    opt_stylize(style = 6, color = "blue")
   if (!is.null(rename_map)) {
     tbl <- tbl %>%
-      gt::cols_label(.list = rename_map)
+      cols_label(.list = rename_map)
   }
   if (!is.null(center_cols)) {
     tbl <- tbl %>%
-      gt::cols_align(align = "center", columns = center_cols)
+      cols_align(align = "center", columns = center_cols)
   }
   return(tbl)
 }
@@ -908,11 +908,11 @@ lazy_table <- function(data,
   if (!is.null(ignore_strings) && length(ignore_strings) > 0) {
     ignore_strings <- ignore_strings[order(nchar(ignore_strings), decreasing = TRUE)]
     for (term in ignore_strings) {
-      if (!is.na(str1)) str1 <- stringr::str_replace_all(str1, stringr::fixed(term), "")
-      if (!is.na(str2)) str2 <- stringr::str_replace_all(str2, stringr::fixed(term), "")
+      if (!is.na(str1)) str1 <- str_replace_all(str1, fixed(term), "")
+      if (!is.na(str2)) str2 <- str_replace_all(str2, fixed(term), "")
     }
-    if (!is.na(str1)) str1 <- stringr::str_squish(str1)
-    if (!is.na(str2)) str2 <- stringr::str_squish(str2)
+    if (!is.na(str1)) str1 <- str_squish(str1)
+    if (!is.na(str2)) str2 <- str_squish(str2)
   }
   if (is.na(str1) || is.na(str2) || nchar(str1) == 0 || nchar(str2) == 0) return(0)
   s1_chars <- strsplit(str1, "")[[1]]
@@ -940,11 +940,11 @@ lazy_table <- function(data,
   if (!is.null(ignore_strings) && length(ignore_strings) > 0) {
     ignore_strings <- ignore_strings[order(nchar(ignore_strings), decreasing = TRUE)]
     for (term in ignore_strings) {
-      if (!is.na(str1)) str1 <- stringr::str_replace_all(str1, stringr::fixed(term), "")
-      if (!is.na(str2)) str2 <- stringr::str_replace_all(str2, stringr::fixed(term), "")
+      if (!is.na(str1)) str1 <- str_replace_all(str1, fixed(term), "")
+      if (!is.na(str2)) str2 <- str_replace_all(str2, fixed(term), "")
     }
-    if (!is.na(str1)) str1 <- stringr::str_squish(str1)
-    if (!is.na(str2)) str2 <- stringr::str_squish(str2)
+    if (!is.na(str1)) str1 <- str_squish(str1)
+    if (!is.na(str2)) str2 <- str_squish(str2)
   }
   if ((is.na(str1) || nchar(str1) == 0) && (is.na(str2) || nchar(str2) == 0)) return(0)
   if (is.na(str1) || nchar(str1) == 0) return(nchar(str2))
@@ -960,9 +960,9 @@ lazy_table <- function(data,
   common_words <- intersect(words1, words2)
   if (length(common_words) == 0) return(0)
   score <- tfidf_weights %>%
-    dplyr::filter(word %in% common_words) %>%
-    dplyr::summarise(total_score = sum(idf)) %>%
-    dplyr::pull(total_score)
+    filter(word %in% common_words) %>%
+    summarise(total_score = sum(idf)) %>%
+    pull(total_score)
   if (length(score) == 0) return(0)
   return(score)
 
@@ -996,38 +996,38 @@ lazy_table <- function(data,
 collapse_dates <- function(df, group_vars, start_var, end_var) {
   
   # Convert string inputs to symbols for tidy evaluation
-  group_syms <- rlang::syms(group_vars)
-  start_quo <- rlang::ensym(start_var)
-  end_quo <- rlang::ensym(end_var)
+  group_syms <- syms(group_vars)
+  start_quo <- ensym(start_var)
+  end_quo <- ensym(end_var)
   
   df %>%
     # 1. Group by the user's ID variables
-    dplyr::group_by(!!!group_syms) %>%
+    group_by(!!!group_syms) %>%
     # 2. Arrange by start date to ensure correct order
-    dplyr::arrange(!!start_quo, .by_group = TRUE) %>%
-    dplyr::mutate(
+    arrange(!!start_quo, .by_group = TRUE) %>%
+    mutate(
       # 3. specific logic: if start <= previous end + 1, it's a continuation
       # (Use +1 to handle the "consecutive day" requirement)
       # We default the first row to being a "new group" (TRUE)
-      is_new_group = is.na(dplyr::lag(!!end_quo)) | 
-                     !!start_quo > (dplyr::lag(!!end_quo) + 86400),
+      is_new_group = is.na(lag(!!end_quo)) | 
+                     !!start_quo > (lag(!!end_quo) + 86400),
       # 4. Create a unique ID for each continuous block
       group_id = cumsum(is_new_group)
     ) %>%
     # 5. Group by original vars AND the new block ID
-    dplyr::group_by(!!!group_syms, group_id) %>%
+    group_by(!!!group_syms, group_id) %>%
     # 6. Collapse to min start and max end
-    dplyr::mutate(
+    mutate(
       new_start = min(!!start_quo),
       new_end = max(!!end_quo)
     ) %>%
-    dplyr::ungroup() %>%
+    ungroup() %>%
     unique() %>%
     # 7. cleanup
-    dplyr::select(-group_id) %>%
-    dplyr::rename(
-      !!rlang::quo_name(start_quo) := new_start,
-      !!rlang::quo_name(end_quo) := new_end
+    select(-group_id) %>%
+    rename(
+      !!quo_name(start_quo) := new_start,
+      !!quo_name(end_quo) := new_end
     )
 }
 
@@ -1060,7 +1060,7 @@ update_workbook_val <- function(wb, find_val, replace_val) {
     # Read the sheet data into 'df'
     # colNames = FALSE ensures headers are treated as regular data rows so they get updated too
     # skipEmptyRows = FALSE preserves the row structure
-    df <- openxlsx::readWorkbook(
+    df <- readWorkbook(
       wb, 
       sheet = sheet, 
       colNames = FALSE, 
@@ -1083,7 +1083,7 @@ update_workbook_val <- function(wb, find_val, replace_val) {
       
       # Write the modified data back to the sheet object
       # We write over the existing data starting at cell A1
-      openxlsx::writeData(
+      writeData(
         wb, 
         sheet = sheet, 
         x = df, 
@@ -1133,7 +1133,7 @@ update_workbook_val <- function(wb, find_val, replace_val) {
 read_sheets_exclude_query <- function(filepath, id_col = NULL) {
   
   # 1. Get all sheet names
-  all_sheets <- readxl::excel_sheets(filepath)
+  all_sheets <- excel_sheets(filepath)
   
   # 2. Filter out "Query"
   # setdiff is a safe way to remove specific items from a vector
@@ -1142,9 +1142,9 @@ read_sheets_exclude_query <- function(filepath, id_col = NULL) {
   # 3. Read and Bind
   # We use set_names() so that bind_rows() can use the names for the id_col
   combined_data <- sheets_to_read %>%
-    purrr::set_names() %>%
-    purrr::map(~ readxl::read_excel(filepath, sheet = .x)) %>%
-    dplyr::bind_rows(.id = id_col)
+    set_names() %>%
+    map(~ read_excel(filepath, sheet = .x)) %>%
+    bind_rows(.id = id_col)
   
   return(combined_data)
 }
@@ -1194,6 +1194,6 @@ rename_formal <- function(.data) {
     return(x)
   }
 
-  dplyr::rename_with(.data, formatter)
+  rename_with(.data, formatter)
 }
 

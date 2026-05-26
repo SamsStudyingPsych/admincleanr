@@ -79,7 +79,7 @@ name_in_lookup <- function(x, lookup, remove_whitespace = TRUE) {
     out[is.na(nx)] <- NA_integer_
     return(out)
   }
-  m <- data.table::chmatch(nx, lookup, nomatch = NA_integer_)
+  m <- chmatch(nx, lookup, nomatch = NA_integer_)
   out <- as.integer(!is.na(m))
   out[is.na(nx)] <- NA_integer_
   out
