@@ -10,7 +10,8 @@ Authors@R: c(
 Description: Helpers for messy administrative extracts: fuzzy string scoring,
     ID hygiene, environment cleanup for large-session work in R, parquet/Excel I/O,
     quick exploratory plots, browser-based onboarding via admincleanr_training(),
-    and heuristic datetime helpers in the sibling admincleanr_crunch package.
+    and exploratory datetime/key-overlap helpers available directly after
+    library(admincleanr).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

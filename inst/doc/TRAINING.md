@@ -8,7 +8,7 @@ Keep **`docs/TRAINING.md`** and **`inst/doc/TRAINING.md`** in sync when editing 
 
 Keep the `package::function()` form when you **choose not** to attach the package (another package you are writing, a one-off call from a script that has not called `library(admincleanr)`, or disambiguation).
 
-**Sibling packages:** `admincleanr_crunch` and `admincleanr_pipe` are separate installs, but `library(admincleanr)` auto-attaches installed companions by default (see `options(admincleanr.autoload_companions)`). Disable that option if you prefer attach-on-demand via `library(admincleanr_crunch)`, `library(admincleanr_pipe)`, or the `package::` prefix.
+**Sibling packages:** `admincleanr_crunch` installs with `admincleanr` and companion packages are auto-attached by default when present (see `options(admincleanr.autoload_companions)`). Disable that option if you prefer attach-on-demand via `library(admincleanr_crunch)`, `library(admincleanr_pipe)`, or the `package::` prefix.
 
 ---
 
@@ -19,11 +19,13 @@ Keep the `package::function()` form when you **choose not** to attach the packag
 devtools::install_github("SamsStudyingPsych/admincleanr")
 ```
 
-Optional **fast / heuristic** tools (datetime guessing, join-overlap exploration) live in a sibling package built from the same repository:
+Fast / heuristic tools (datetime guessing, join-overlap exploration) live in a sibling package built from the same repository:
 
 ```r
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")
 ```
+
+The core crunch helpers are exported by `admincleanr` too, so after loading the main package you can call `coerce_best_datetime()` and `pairwise_column_overlap()` directly.
 
 Planned **validation-first / lean pipeline** patterns will accumulate under `admincleanr_pipe` (scaffold today):
 
@@ -127,7 +129,7 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 
 ## 4. **admincleanr_crunch**: datetime guessing
 
-With **admincleanr_crunch** installed, `library(admincleanr)` auto-attaches it by default (or run `library(admincleanr_crunch)` explicitly).
+The core crunch helpers below are exported by `admincleanr`; `library(admincleanr)` also auto-attaches **admincleanr_crunch** by default (or run `library(admincleanr_crunch)` explicitly).
 
 When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
 

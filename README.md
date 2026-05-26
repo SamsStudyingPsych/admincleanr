@@ -27,7 +27,7 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 - **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
   Installed automatically as a dependency of `admincleanr`. After `library(admincleanr)` you can call
   `coerce_best_datetime()`, `coerce_best_datetime_cols()`, and `pairwise_column_overlap()` directly
-  without any prefix.
+  without any prefix. The same core helpers are exported by `admincleanr` as well.
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
 
@@ -94,7 +94,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)` you can call helpers by name (no `admincleanr::` prefix required). The package adds documentation, versioning, re-exported pipeline verbs (`mutate`, `dbGetQuery`, and others), and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix remains available when you choose not to attach the package.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)` you can call helpers by name (for example `squish_character_columns()` or `coerce_best_datetime()`, no `admincleanr::` prefix required). The package adds documentation, versioning, re-exported pipeline verbs (`mutate`, `dbGetQuery`, and others), and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix remains available when you choose not to attach the package.
 
 ---
 
