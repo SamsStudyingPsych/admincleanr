@@ -13,12 +13,12 @@ pak::pak("SamsStudyingPsych/admincleanr")
 ### Training — copy-paste in RStudio / Positron
 
 ```r
-library(admincleanr)           # exports + common dplyr/DBI verbs; autoloads tidyverse stack in interactive R
+library(admincleanr)           # exports helpers and autoloads the tidyverse/DBI workbench stack
 admincleanr_training()         # browser → GitHub training page
 admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
 ```
 
-If the workbench stack did not attach (non-interactive session), run `admincleanr_attach_workbench()` or set `options(admincleanr.autoload_workbench = TRUE)` before `library(admincleanr)`.
+The workbench stack auto-attaches by default in normal console, `Rscript`, and batch sessions. Set `options(admincleanr.autoload_workbench = FALSE)` before `library(admincleanr)` only when you want to disable that behavior; if dependencies were missing, reinstall and then run `admincleanr_attach_workbench()`.
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs). After `library(admincleanr)`, you can call every exported helper by name; the `admincleanr::` prefix is only required when you deliberately skip attaching the package.
 

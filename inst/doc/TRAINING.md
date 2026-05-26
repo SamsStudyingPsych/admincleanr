@@ -31,7 +31,7 @@ Planned **validation-first / lean pipeline** patterns will accumulate under `adm
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")
 ```
 
-Load the package once per session, then call exported helpers by name (no `admincleanr::` prefix needed). In interactive R the usual **tidyverse / janitor / readxl / DBI / odbc** stack attaches automatically when enabled, and re-exports cover common pipeline verbs even when autoload is off:
+Load the package once per session, then call exported helpers by name (no `admincleanr::` prefix needed). In normal console, `Rscript`, and batch sessions, the usual **tidyverse / janitor / readxl / DBI / odbc** stack attaches automatically; re-exports also cover common pipeline verbs when autoload is disabled:
 
 ```r
 library(admincleanr)
@@ -44,7 +44,7 @@ admincleanr_training()              # browser (GitHub-rendered)
 admincleanr_training("local")       # open bundled TRAINING.md in IDE when supported
 ```
 
-If the workbench stack did not attach, run `admincleanr_attach_workbench()` or set `options(admincleanr.autoload_workbench = TRUE)` before `library(admincleanr)`. If you choose **not** to attach **admincleanr**, qualify calls explicitly, e.g. `admincleanr::read_data_file(...)`.
+To disable automatic workbench attach, set `options(admincleanr.autoload_workbench = FALSE)` before `library(admincleanr)`. If attach was skipped because dependencies were missing, reinstall with dependencies and then run `admincleanr_attach_workbench()`. If you choose **not** to attach **admincleanr**, qualify calls explicitly, e.g. `admincleanr::read_data_file(...)`.
 
 ---
 
