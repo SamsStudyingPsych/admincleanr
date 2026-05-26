@@ -70,7 +70,7 @@ admincleanr_attach_crunch <- function() {
     )
   }
   suppressPackageStartupMessages(
-    library(admincleanr_crunch, character.only = TRUE)
+    library("admincleanr_crunch", character.only = TRUE)
   )
   invisible()
 }
