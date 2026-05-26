@@ -3,9 +3,16 @@
     return(invisible())
   }
   autoload_option <- getOption("admincleanr.autoload_workbench")
-  autoload <- if (is.null(autoload_option)) interactive() else isTRUE(autoload_option)
+  autoload <- if (is.null(autoload_option)) TRUE else isTRUE(autoload_option)
 
-  if (autoload) {
+  # Avoid attaching the full tidyverse stack during `R CMD check` on this package
+  # (startup cost, dependency ordering, and cleaner example runs).
+  checking_self <- identical(
+    Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = ""),
+    "admincleanr"
+  )
+
+  if (autoload && !checking_self) {
     tryCatch(
       admincleanr_attach_workbench(),
       error = function(err) {

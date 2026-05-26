@@ -1,4 +1,4 @@
-#' Attach the usual interactive analysis stack
+#' Attach the usual analysis stack (tidyverse, janitor, readxl, DBI, ODBC)
 #'
 #' Calls \code{library()} on \pkg{tidyverse}, \pkg{janitor}, \pkg{readxl},
 #' \pkg{DBI}, and \pkg{odbc} with startup messages suppressed. Use when you want
@@ -7,11 +7,17 @@
 #' @return \code{NULL} invisibly.
 #' @section Workflow integration:
 #' \itemize{
-#'   \item By default, \code{library(admincleanr)} auto-attaches this stack in
-#'     interactive sessions. Set \code{options(admincleanr.autoload_workbench = TRUE)}
-#'     before \code{library(admincleanr)} to attach in non-interactive jobs too.
-#'   \item Set \code{options(admincleanr.autoload_workbench = FALSE)} on servers
-#'     or \code{R CMD check} contexts where silent attach is undesirable.
+#'   \item By default, \code{library(admincleanr)} runs this automatically in
+#'     normal sessions (console, \code{Rscript}, and batch jobs) so you can call
+#'     \verb{mutate()}, \verb{read_excel()}, and other workbench verbs without
+#'     \verb{package::} prefixes. When \code{admincleanr.autoload_workbench} is
+#'     unset it defaults to \code{TRUE}; set \code{options(admincleanr.autoload_workbench = FALSE)}
+#'     to disable (for example on servers with strict attach policy).
+#'   \item During \code{R CMD check} on \pkg{admincleanr} itself, auto-attach is
+#'     skipped even when the option is \code{TRUE}.
+#'   \item If required workbench packages are missing, auto-attach fails with a
+#'     startup message; install dependencies or call
+#'     \code{admincleanr_attach_workbench()} after fixing the installation.
 #' }
 #' @export
 #' @examples
