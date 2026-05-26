@@ -8,8 +8,8 @@
 #' @section Workflow integration:
 #' \itemize{
 #'   \item Set \code{options(admincleanr.autoload_workbench = TRUE)} before
-#'     \code{library(admincleanr)} to auto-attach in interactive sessions (see
-#'     package attach hook).
+#'     \code{library(admincleanr)} to auto-attach this stack (see package attach
+#'     hook). This is the default behavior unless you turn it off explicitly.
 #'   \item Set \code{options(admincleanr.autoload_workbench = FALSE)} on servers
 #'     or \code{R CMD check} contexts where silent attach is undesirable.
 #' }
