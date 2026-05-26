@@ -2,6 +2,7 @@
   if (!identical(pkgname, "admincleanr")) {
     return(invisible())
   }
+
   autoload_option <- getOption("admincleanr.autoload_workbench")
   autoload <- if (is.null(autoload_option)) TRUE else isTRUE(autoload_option)
 
@@ -26,5 +27,26 @@
       }
     )
   }
+
+  crunch_option <- getOption("admincleanr.autoload_crunch")
+  autoload_crunch <- if (is.null(crunch_option)) {
+    interactive()
+  } else {
+    isTRUE(crunch_option)
+  }
+
+  if (autoload_crunch && !checking_self && requireNamespace("admincleanr_crunch", quietly = TRUE)) {
+    tryCatch(
+      admincleanr_attach_crunch(),
+      error = function(err) {
+        packageStartupMessage(
+          "admincleanr_crunch auto-attach skipped: ",
+          conditionMessage(err)
+        )
+        invisible()
+      }
+    )
+  }
+
   invisible()
 }

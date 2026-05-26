@@ -8,7 +8,7 @@ Keep **`docs/TRAINING.md`** and **`inst/doc/TRAINING.md`** in sync when editing 
 
 Keep the `package::function()` form when you **choose not** to attach the package (another package you are writing, a one-off call from a script that has not called `library(admincleanr)`, or disambiguation).
 
-**Sibling packages** (`admincleanr_crunch`, `admincleanr_pipe`) are separate installs with their own namespaces. Use `library(admincleanr_crunch)` (then unprefixed crunch helpers) or keep the `admincleanr_crunch::` prefix unless you attach them.
+**Sibling packages:** `admincleanr_crunch` is a separate install, but interactive `library(admincleanr)` auto-attaches it when present (see `options(admincleanr.autoload_crunch)`). `admincleanr_pipe` remains attach-on-demand via `library(admincleanr_pipe)` or the `admincleanr_pipe::` prefix.
 
 ---
 
@@ -70,7 +70,7 @@ The question is only: *after you block, roughly how many rows or pairs are left?
 
 ## 3. Core **admincleanr** flows
 
-Assumes `library(admincleanr)` (see §1).
+Assumes `library(admincleanr)` (see section 1).
 
 ### 3.1 After SQL: text fields
 
@@ -127,7 +127,7 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 
 ## 4. **admincleanr_crunch**: datetime guessing
 
-After `library(admincleanr_crunch)`:
+With **admincleanr_crunch** installed, interactive `library(admincleanr)` auto-attaches it (or run `library(admincleanr_crunch)` explicitly).
 
 When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
 

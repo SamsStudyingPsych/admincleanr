@@ -3,7 +3,8 @@
 #' \code{library(admincleanr)} attaches this symbol explicitly: \code{exportPattern("^[[:alpha:]]+")}
 #' in \code{NAMESPACE} does \strong{not} match \code{"\%>\%"}, so \code{export("\%>\%")} is
 #' listed separately—do not remove that line from \code{NAMESPACE} unless you switch to
-#' full roxygen-generated exports.
+#' full roxygen-generated exports. Other exported helpers are also available without the
+#' \code{admincleanr::} prefix after \code{library(admincleanr)}.
 #'
 #' @section Workflow integration:
 #' \itemize{

@@ -39,6 +39,14 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 
 `upgrade = "always"` refreshes dependency packages as well (`remotes`/Pak offer similar workflows). For reproducibility in production jobs, pin a commit or Git tag once you validate a release.
 
+### Calling helpers (no `admincleanr::` prefix)
+
+After `library(admincleanr)`, use exported helpers by name — for example `squish_character_columns()`, not `admincleanr::squish_character_columns()`. The `::` form is optional (handy when you have not attached the package yet).
+
+In interactive sessions, `library(admincleanr)` also tries to attach the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`) and, when installed, **admincleanr_crunch** so those helpers are available without a package prefix too. Turn that off with `options(admincleanr.autoload_workbench = FALSE)` or `options(admincleanr.autoload_crunch = FALSE)`. Batch scripts can call `admincleanr_attach_workbench()` and `admincleanr_attach_crunch()` explicitly.
+
+If workbench packages fail to attach, you now get an explicit startup message with reinstall guidance instead of a silent skip.
+
 ---
 
 ## Highlights
@@ -55,7 +63,6 @@ Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
 library(admincleanr)
-library(DBI)
 df <- dbGetQuery(con, "SELECT ... FROM ...")
 df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
@@ -81,7 +88,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)` you can call helpers by name (no `admincleanr::` prefix required). The package adds documentation, versioning, re-exported pipeline verbs, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix remains available when you choose not to attach the package.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)` you can call helpers by name (no `admincleanr::` prefix required). The package adds documentation, versioning, re-exported pipeline verbs (`mutate`, `dbGetQuery`, and others), and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix remains available when you choose not to attach the package.
 
 ---
 

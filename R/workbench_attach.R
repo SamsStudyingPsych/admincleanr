@@ -47,3 +47,30 @@ admincleanr_attach_workbench <- function() {
   })
   invisible()
 }
+
+#' Attach the optional \pkg{admincleanr_crunch} companion
+#'
+#' Installs of the main package do not require \pkg{admincleanr_crunch}, but when
+#' it is present this helper (and the attach hook) load it so heuristic helpers
+#' such as \code{coerce_best_datetime()} are available without the
+#' \code{admincleanr_crunch::} prefix.
+#'
+#' @return \code{NULL} invisibly.
+#' @export
+#' @examples
+#' \dontrun{
+#' admincleanr_attach_crunch()
+#' }
+admincleanr_attach_crunch <- function() {
+  if (!requireNamespace("admincleanr_crunch", quietly = TRUE)) {
+    stop(
+      "Package 'admincleanr_crunch' is not installed. ",
+      "pak::pak(\"SamsStudyingPsych/admincleanr\", subdir = \"admincleanr_crunch\")",
+      call. = FALSE
+    )
+  }
+  suppressPackageStartupMessages(
+    library(admincleanr_crunch, character.only = TRUE)
+  )
+  invisible()
+}
