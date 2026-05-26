@@ -20,6 +20,15 @@ admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from 
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
+`library(admincleanr)` also attaches common workflow packages (for example `dplyr`, `tidyr`, `stringr`, `lubridate`, `readxl`, `openxlsx`) so you can call those functions without `pkg::` prefixes in interactive work.
+
+If you prefer strict namespaces, disable this behavior before loading:
+
+```r
+options(admincleanr.attach_packages = FALSE)
+library(admincleanr)
+```
+
 ### Companion packages (same GitHub repo)
 
 - **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
