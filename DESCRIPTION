@@ -23,6 +23,7 @@ Imports:
     DBI,
     dplyr,
     ggplot2,
+    glue,
     gt,
     janitor,
     lubridate,

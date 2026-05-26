@@ -24,7 +24,7 @@ excelify_names <- function(obj) {
 .excelify_name_vec <- function(v) {
   v <- as.character(v)
   v <- gsub("[_.]", " ", v)
-  tools::toTitleCase(v)
+  toTitleCase(v)
 }
 
 
@@ -54,11 +54,11 @@ excelify_names <- function(obj) {
 export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
   export_df <- excelify_names(df)
 
-  wb <- openxlsx::createWorkbook()
-  openxlsx::addWorksheet(wb, sheet_name)
-  openxlsx::writeData(wb, sheet = sheet_name, x = export_df)
+  wb <- createWorkbook()
+  addWorksheet(wb, sheet_name)
+  writeData(wb, sheet = sheet_name, x = export_df)
 
-  header_style <- openxlsx::createStyle(
+  header_style <- createStyle(
     textDecoration = "bold",
     fgFill = "#DCE6F1",
     halign = "center",
@@ -67,7 +67,7 @@ export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
   )
 
   num_cols <- ncol(export_df)
-  openxlsx::addStyle(
+  addStyle(
     wb,
     sheet = sheet_name,
     style = header_style,
@@ -75,16 +75,16 @@ export_formatted_excel <- function(df, filepath, sheet_name = "Data") {
     cols = seq_len(num_cols),
     gridExpand = TRUE
   )
-  openxlsx::setColWidths(wb, sheet = sheet_name, cols = seq_len(num_cols), widths = "auto")
-  openxlsx::addFilter(wb, sheet = sheet_name, row = 1, cols = seq_len(num_cols))
+  setColWidths(wb, sheet = sheet_name, cols = seq_len(num_cols), widths = "auto")
+  addFilter(wb, sheet = sheet_name, row = 1, cols = seq_len(num_cols))
 
   timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-  base_path <- tools::file_path_sans_ext(filepath)
-  ext <- tools::file_ext(filepath)
+  base_path <- file_path_sans_ext(filepath)
+  ext <- file_ext(filepath)
   if (!nzchar(ext)) ext <- "xlsx"
   final_path <- paste0(base_path, "_", timestamp, ".", ext)
 
-  openxlsx::saveWorkbook(wb, final_path, overwrite = TRUE)
+  saveWorkbook(wb, final_path, overwrite = TRUE)
   message("Exported formatted Excel file to ", final_path)
   invisible(final_path)
 }
@@ -114,8 +114,8 @@ save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list)
     stop("The number of sheet names must equal the number of dataframes.")
   }
 
-  wb <- openxlsx::createWorkbook()
-  header_style <- openxlsx::createStyle(
+  wb <- createWorkbook()
+  header_style <- createStyle(
     textDecoration = "bold",
     fgFill = "#DCE6F1",
     halign = "center",
@@ -132,12 +132,12 @@ save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list)
     }
     current_df <- excelify_names(current_df)
 
-    openxlsx::addWorksheet(wb, sheetName = sh)
-    openxlsx::writeData(wb, sheet = sh, x = current_df)
+    addWorksheet(wb, sheetName = sh)
+    writeData(wb, sheet = sh, x = current_df)
     num_cols <- ncol(current_df)
     if (!num_cols) next
 
-    openxlsx::addStyle(
+    addStyle(
       wb,
       sheet = sh,
       style = header_style,
@@ -145,17 +145,17 @@ save_to_excel_multisheet_formatted <- function(filepath, sheet_names, data_list)
       cols = seq_len(num_cols),
       gridExpand = TRUE
     )
-    openxlsx::setColWidths(wb, sheet = sh, cols = seq_len(num_cols), widths = "auto")
-    openxlsx::addFilter(wb, sheet = sh, row = 1, cols = seq_len(num_cols))
+    setColWidths(wb, sheet = sh, cols = seq_len(num_cols), widths = "auto")
+    addFilter(wb, sheet = sh, row = 1, cols = seq_len(num_cols))
   }
 
   timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-  base_path <- tools::file_path_sans_ext(filepath)
-  ext <- tools::file_ext(filepath)
+  base_path <- file_path_sans_ext(filepath)
+  ext <- file_ext(filepath)
   if (!nzchar(ext)) ext <- "xlsx"
   final_path <- paste0(base_path, "_", timestamp, ".", ext)
 
-  openxlsx::saveWorkbook(wb, final_path, overwrite = TRUE)
+  saveWorkbook(wb, final_path, overwrite = TRUE)
   message("Saved formatted multi-sheet workbook: ", final_path)
   invisible(final_path)
 }
@@ -197,7 +197,7 @@ format_workbook_headers <- function(wb, max_cols = 200L) {
   if (!length(sheets)) {
     return(invisible(wb))
   }
-  header_style <- openxlsx::createStyle(
+  header_style <- createStyle(
     textDecoration = "bold",
     fgFill = "#DCE6F1",
     halign = "center",
@@ -206,7 +206,7 @@ format_workbook_headers <- function(wb, max_cols = 200L) {
   )
 
   for (sheet in sheets) {
-    openxlsx::addStyle(
+    addStyle(
       wb,
       sheet = sheet,
       style = header_style,
@@ -214,8 +214,8 @@ format_workbook_headers <- function(wb, max_cols = 200L) {
       cols = seq_len(as.integer(max_cols)),
       gridExpand = TRUE
     )
-    openxlsx::setColWidths(wb, sheet = sheet, cols = seq_len(as.integer(max_cols)), widths = "auto")
-    openxlsx::addFilter(wb, sheet = sheet, row = 1, cols = seq_len(as.integer(max_cols)))
+    setColWidths(wb, sheet = sheet, cols = seq_len(as.integer(max_cols)), widths = "auto")
+    addFilter(wb, sheet = sheet, row = 1, cols = seq_len(as.integer(max_cols)))
   }
   invisible(wb)
 }
@@ -264,10 +264,10 @@ read_delim_utf16 <- function(file_path) {
 #' @importFrom dplyr group_by mutate ungroup filter n_distinct
 mult_check <- function(df, group_col, target_col) {
   df %>%
-    dplyr::group_by({{ group_col }}) %>%
-    dplyr::mutate(n_unique = dplyr::n_distinct({{ target_col }})) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(n_unique > 1)
+    group_by({{ group_col }}) %>%
+    mutate(n_unique = n_distinct({{ target_col }})) %>%
+    ungroup() %>%
+    filter(n_unique > 1)
 }
 
 
@@ -316,5 +316,5 @@ newest_data_file <- function(folder_path = ".") {
 #' @importFrom dplyr mutate across
 mumeric <- function(df, ...) {
   df %>%
-    dplyr::mutate(dplyr::across(c(...), as.numeric))
+    mutate(across(c(...), as.numeric))
 }

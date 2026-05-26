@@ -37,7 +37,7 @@ read_parquet_with_date <- function(filepath, ...) {
     basename(filepath),
     format(mod_time, "%Y-%m-%d %H:%M:%S")
   ))
-  df <- arrow::read_parquet(filepath, ...)
+  df <- read_parquet(filepath, ...)
   if (inherits(df, "ArrowTabular") || inherits(df, "Table")) {
     df <- as.data.frame(df)
   }
@@ -78,18 +78,18 @@ read_data_file <- function(path, ...) {
   if (!file.exists(path)) {
     stop("File does not exist: ", path)
   }
-  ext <- tolower(tools::file_ext(path))
+  ext <- tolower(file_ext(path))
   switch(ext,
     "parquet" = {
-      df <- arrow::read_parquet(path, ...)
+      df <- read_parquet(path, ...)
       if (inherits(df, "ArrowTabular") || inherits(df, "Table")) df <- as.data.frame(df)
       df
     },
     "csv" = ,
     "tsv" = ,
-    "txt" = data.table::fread(path, ..., data.table = FALSE),
+    "txt" = fread(path, ..., data.table = FALSE),
     "xlsx" = ,
-    "xls" = readxl::read_excel(path, ...),
+    "xls" = read_excel(path, ...),
     "rds" = {
       dots <- list(...)
       if (length(dots)) {
@@ -135,8 +135,8 @@ clean_names_trim_ws <- function(df, ...) {
   if (!is.data.frame(df)) {
     stop("df must be a data.frame.")
   }
-  out <- janitor::clean_names(df, ...)
-  out <- dplyr::mutate(out, dplyr::across(dplyr::where(is.character), trimws))
+  out <- clean_names(df, ...)
+  out <- mutate(out, across(where(is.character), trimws))
   out
 }
 
@@ -168,13 +168,13 @@ squish_character_columns <- function(df, collapse_newlines = TRUE) {
   if (!is.data.frame(df)) {
     stop("df must be a data.frame.")
   }
-  dplyr::mutate(
+  mutate(
     df,
-    dplyr::across(dplyr::where(is.character), function(x) {
+    across(where(is.character), function(x) {
       if (isTRUE(collapse_newlines)) {
         x <- gsub("[\r\n]+", " ", x, perl = TRUE)
       }
-      stringr::str_squish(x)
+      str_squish(x)
     })
   )
 }
@@ -228,7 +228,7 @@ parse_time_to_mins <- function(time_str) {
 #' @export
 #' @importFrom lubridate as_datetime wday hour minute
 ts_to_weekly_mins <- function(ts) {
-  ts <- lubridate::as_datetime(ts)
-  days_in <- lubridate::wday(ts, week_start = 1) - 1L
-  days_in * 24 * 60 + lubridate::hour(ts) * 60 + lubridate::minute(ts)
+  ts <- as_datetime(ts)
+  days_in <- wday(ts, week_start = 1) - 1L
+  days_in * 24 * 60 + hour(ts) * 60 + minute(ts)
 }
