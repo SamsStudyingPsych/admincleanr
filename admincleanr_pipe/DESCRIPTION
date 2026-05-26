@@ -9,7 +9,8 @@ Authors@R: c(
   )
 Description: Placeholder namespace for tightly scoped, upstream-aware helpers
     (explicit parsers, deterministic transforms, parity checks across refresh cycles).
-    Use `library(admincleanr)` for usable implementations until functions migrate here.
+    NOTE: these functions now ship with the main admincleanr package. This companion
+    package is kept for backward compatibility.
 License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.3.3

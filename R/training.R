@@ -22,8 +22,8 @@
 #' @section Workflow integration:
 #' Call once per session or when onboarding collaborators: the training page ties
 #' together SQL handoff, cleaning helpers, linkage heuristics, and companion packages
-#' (\code{admincleanr_crunch}, \code{admincleanr_pipe}). Keep it open while you sketch
-#' an analysis script so function choices stay consistent with the documented pipeline.
+#' Keep it open while you sketch an analysis script so function choices stay
+#' consistent with the documented pipeline.
 #'
 #' @return Invisibly, the URL (browser) or filesystem path (local).
 #' @export

@@ -10,7 +10,8 @@ Authors@R: c(
 Description: Heuristic helpers for ad hoc cleaning when formats and keys are unclear:
     best-effort datetime parsing by scanning candidate orders; pairwise overlap
     scores to suggest merge columns; intended for iterative analysis rather than
-    production pipelines.
+    production pipelines. NOTE: these functions now ship with the main admincleanr
+    package. This companion package is kept for backward compatibility.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
