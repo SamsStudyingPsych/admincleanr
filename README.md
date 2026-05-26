@@ -20,12 +20,13 @@ admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from 
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
-### Companion packages (same GitHub repo)
+### Former companion packages (now included)
 
-- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
-- **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
+Functions that previously lived in **`admincleanr_crunch`** and **`admincleanr_pipe`** are now part of this package. After `library(admincleanr)`, call them directly—no separate install or `admincleanr_crunch::` prefix needed:
+
+- `coerce_best_datetime()` / `coerce_best_datetime_cols()` — heuristic datetime parsing
+- `pairwise_column_overlap()` — Jaccard overlap scoring for candidate join keys
+- `pipe_scaffold_message()` — placeholder for pipeline helpers
 
 ## Staying up to date
 
