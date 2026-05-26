@@ -18,6 +18,21 @@ admincleanr_training()         # browser → GitHub training page
 admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
 ```
 
+### Calling functions without `pkg::` prefixes
+
+`library(admincleanr)` can auto-attach the usual analysis stack and (when installed)
+the companion packages, so exported helpers are callable directly.
+
+```r
+options(admincleanr.autoload_workbench = TRUE)   # default in interactive sessions
+options(admincleanr.autoload_companions = TRUE)  # attach admincleanr_crunch/admincleanr_pipe if installed
+library(admincleanr)
+
+# now callable without package prefix (when installed):
+coerce_best_datetime_cols(df)
+pipe_scaffold_message()
+```
+
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
 ### Companion packages (same GitHub repo)
