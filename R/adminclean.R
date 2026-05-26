@@ -1031,19 +1031,27 @@ collapse_dates <- function(df, group_vars, start_var, end_var) {
     )
 }
 
+#' Find-and-replace text across every sheet of an openxlsx Workbook
+#'
 #' @description
-#' Takes an existing openxlsx Workbook object and replaces every instance of a 
+#' Takes an existing openxlsx Workbook object and replaces every instance of a
 #' specified text pattern with a replacement value across all sheets.
-#' 
-#' This function modifies the Workbook object in place (as openxlsx objects are 
+#'
+#' This function modifies the Workbook object in place (as openxlsx objects are
 #' environments) but also returns it for pipe-friendliness.
 #'
 #' @param wb A Workbook object (created via openxlsx::loadWorkbook or createWorkbook).
 #' @param find_val The text string or regex pattern to search for.
 #' @param replace_val The text string to replace the found pattern with.
 #' @return The modified Workbook object.
+#' @section Workflow integration:
+#' \itemize{
+#'   \item Apply consistent **terminology or PII redactions** across every tab of a
+#'     legacy workbook before circulating—saves opening each sheet by hand.
+#'   \item See \code{\link{admincleanr_training}} for Excel handoff patterns.
+#' }
+#' @export
 #' @importFrom openxlsx readWorkbook writeData
-#' @importFrom base gsub
 update_workbook_val <- function(wb, find_val, replace_val) {
   
   # Loop through every sheet in the workbook object
@@ -1092,7 +1100,12 @@ update_workbook_val <- function(wb, find_val, replace_val) {
 
 
 
-#' combines them into a single dataframe using `bind_rows`.
+#' Read every sheet of an Excel workbook except a stray "Query" tab
+#'
+#' @description
+#' Reads each worksheet in an `.xlsx` file (skipping any sheet literally named
+#' `"Query"`, which self-service query tools often add) and combines them into a
+#' single dataframe using `bind_rows`.
 #'
 #' @param filepath A character string path to the .xlsx file.
 #' @param id_col Optional. A string name for a new column to store the
