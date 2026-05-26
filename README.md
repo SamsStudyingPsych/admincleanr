@@ -23,16 +23,16 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 ### Companion packages (same GitHub repo)
 
 - **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  `devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
+  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
-  `devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
+  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
 
 ## Staying up to date
 
-Re-run `install_github` whenever you pull changes from GitHub:
+Re-run `pak::pak` whenever you pull changes from GitHub:
 
 ```r
-devtools::install_github("SamsStudyingPsych/admincleanr", upgrade = "always")
+pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 ```
 
 `upgrade = "always"` refreshes dependency packages as well (`remotes`/Pak offer similar workflows). For reproducibility in production jobs, pin a commit or Git tag once you validate a release.
