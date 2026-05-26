@@ -8,6 +8,7 @@ Install from GitHub:
 # install.packages("devtools")
 # install.packages("pak")
 pak::pak("SamsStudyingPsych/admincleanr")
+library(admincleanr)
 ```
 
 ### Training — copy-paste in RStudio / Positron
@@ -52,8 +53,10 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
+library(admincleanr)
+
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +80,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)`, call helpers directly (`squish_character_columns()`); the `admincleanr::` prefix is only needed when you choose not to attach the package. The package adds documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
 
 ---
 

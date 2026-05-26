@@ -37,7 +37,7 @@
 #' @section Workflow integration:
 #' \itemize{
 #'   \item **Rank candidate join keys** when receiving two unfamiliar extracts—narrows which columns deserve deeper validation or SQL-side blocking.
-#'   \item See \code{admincleanr::admincleanr_training()} for linkage sequencing with \pkg{admincleanr} similarity helpers after overlap hints.
+#'   \item See \code{admincleanr_training()} after \code{library(admincleanr)} for linkage sequencing with \pkg{admincleanr} similarity helpers after overlap hints.
 #' }
 #'
 #' @param left,right Data frames.

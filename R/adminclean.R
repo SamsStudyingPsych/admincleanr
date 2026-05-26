@@ -92,7 +92,7 @@ nable_pct <- function(x){
 #' @section Workflow integration:
 #' \itemize{
 #'   \item After you know **explicit** date fields and formats, batch-type columns for timeline joins and \code{\link{collapse_dates}}; prefer database-typed dates when available.
-#'   \item For unknown string formats during exploration, use \code{admincleanr_crunch::coerce_best_datetime_cols}; see \code{\link{admincleanr_training}}.
+#'   \item For unknown string formats during exploration, load \pkg{admincleanr_crunch} and use \code{coerce_best_datetime_cols()}; see \code{\link{admincleanr_training}}.
 #' }
 #' @export
 #' @importFrom dplyr mutate across

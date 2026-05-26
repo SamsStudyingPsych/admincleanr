@@ -14,4 +14,4 @@ Design goals when code moves here:
 - Keep **dependencies minimal** and auditable.
 - Pair each transform with a **cheap validation** (row counts, key uniqueness, spot diffs between refresh dates).
 
-See also `docs/TRAINING.md` in the repository and `admincleanr::admincleanr_training()`.
+See also `docs/TRAINING.md` in the repository and `admincleanr_training()` after `library(admincleanr)`.

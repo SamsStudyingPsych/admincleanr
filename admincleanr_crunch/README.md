@@ -8,6 +8,7 @@ Install from this monorepo:
 
 ```r
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")
+library(admincleanr_crunch)
 ```
 
 Main entry points:
@@ -20,5 +21,6 @@ Fuzzy joins remain in **`admincleanr`** for now (`fuzzy_left_join_stringdist()`)
 Open the shared training overview from R (`docs/TRAINING.md` on GitHub):
 
 ```r
-admincleanr::admincleanr_training()
+library(admincleanr)
+admincleanr_training()
 ```
