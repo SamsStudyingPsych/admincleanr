@@ -18,7 +18,7 @@ admincleanr_training()         # browser → GitHub training page
 admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
 ```
 
-Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
+Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs). After `library(admincleanr)`, you can call every exported helper by name; the `admincleanr::` prefix is only required when you deliberately skip attaching the package.
 
 ### Companion packages (same GitHub repo)
 
@@ -52,8 +52,10 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
+library(admincleanr)
+library(DBI)
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +79,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix is optional whenever you have run `library(admincleanr)` (or otherwise attached the package).
 
 ---
 
