@@ -113,3 +113,55 @@ DBI::dbGetQuery
 #' @importFrom DBI dbDisconnect
 #' @export
 DBI::dbDisconnect
+
+#' @importFrom DBI dbWriteTable
+#' @export
+DBI::dbWriteTable
+
+#' @importFrom dplyr across
+#' @export
+dplyr::across
+
+#' @importFrom dplyr where
+#' @export
+dplyr::where
+
+#' @importFrom dplyr case_when
+#' @export
+dplyr::case_when
+
+#' @importFrom dplyr bind_rows
+#' @export
+dplyr::bind_rows
+
+#' @importFrom dplyr rename
+#' @export
+dplyr::rename
+
+#' @importFrom dplyr distinct
+#' @export
+dplyr::distinct
+
+#' @importFrom dplyr count
+#' @export
+dplyr::count
+
+#' @importFrom stringr str_squish
+#' @export
+stringr::str_squish
+
+#' @importFrom stringr str_trim
+#' @export
+stringr::str_trim
+
+#' @importFrom tidyr pivot_longer
+#' @export
+tidyr::pivot_longer
+
+#' @importFrom tidyr pivot_wider
+#' @export
+tidyr::pivot_wider
+
+#' @importFrom tidyr drop_na
+#' @export
+tidyr::drop_na
