@@ -20,5 +20,6 @@ Fuzzy joins remain in **`admincleanr`** for now (`fuzzy_left_join_stringdist()`)
 Open the shared training overview from R (`docs/TRAINING.md` on GitHub):
 
 ```r
-admincleanr::admincleanr_training()
+library(admincleanr)
+admincleanr_training()
 ```

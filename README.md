@@ -53,7 +53,7 @@ Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +77,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)`, exported functions are directly callable (for example `squish_character_columns()`), while `admincleanr::` remains available when you want explicit namespacing. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
 
 ---
 
