@@ -1,3 +1,5 @@
 exportPattern("^[[:alpha:]]+")
 export("%>%")
 importFrom(magrittr,"%>%")
+importFrom(lubridate,as_datetime)
+importFrom(lubridate,parse_date_time)

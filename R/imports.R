@@ -25,6 +25,7 @@
 #' @importFrom lubridate interval %within%
 #' @importFrom lubridate years months days weeks
 #' @importFrom lubridate make_date make_datetime
+#' @importFrom lubridate as_datetime parse_date_time
 #'
 # --- Database (ODBC) ---
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery dbWriteTable
