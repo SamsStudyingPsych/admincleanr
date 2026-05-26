@@ -4,22 +4,16 @@ Heuristic helpers for **fast exploration** when you have limited prior knowledge
 
 Designed for iterative analysis—not as a substitute for explicit formats and keys once you discover them (**see `admincleanr_pipe`** for that trajectory).
 
-**These functions are re-exported by `admincleanr`** — installing and loading the main package is all
+**These functions are exported by `admincleanr`** — installing and loading the main package is all
 you need:
 
 ```r
-pak::pak("SamsStudyingPsych/admincleanr")   # installs admincleanr_crunch automatically
+pak::pak("SamsStudyingPsych/admincleanr")
 library(admincleanr)
 
 coerce_best_datetime(x)           # no prefix needed
 coerce_best_datetime_cols(df, cols)
 pairwise_column_overlap(df1, df2)
-```
-
-To install `admincleanr_crunch` standalone (e.g. in a minimal environment):
-
-```r
-pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")
 ```
 
 Main entry points:

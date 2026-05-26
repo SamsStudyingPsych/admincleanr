@@ -25,15 +25,11 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 ### Companion packages (same GitHub repo)
 
 - **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  Installed automatically as a dependency of `admincleanr`. After `library(admincleanr)` you can call
+  The core helpers are exported by `admincleanr`, so after `library(admincleanr)` you can call
   `coerce_best_datetime()`, `coerce_best_datetime_cols()`, and `pairwise_column_overlap()` directly
-  without any prefix. The same core helpers are exported by `admincleanr` as well.
+  without any prefix.
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
-
-After `library(admincleanr)`, exported functions from installed companion packages
-are attached automatically by default. You can disable that behavior with
-`options(admincleanr.autoload_companions = FALSE)`.
 
 ## Staying up to date
 
@@ -49,7 +45,7 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 
 After `library(admincleanr)`, use exported helpers by name — for example `squish_character_columns()`, not `admincleanr::squish_character_columns()`. The `::` form is optional (handy when you have not attached the package yet).
 
-In normal sessions, `library(admincleanr)` also tries to attach the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`) and installed companion packages, so those helpers are available without a package prefix too. Turn those off with `options(admincleanr.autoload_workbench = FALSE)` or `options(admincleanr.autoload_companions = FALSE)`.
+In normal sessions, `library(admincleanr)` also tries to attach the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`), so those helpers are available without a package prefix too. Turn that off with `options(admincleanr.autoload_workbench = FALSE)`.
 
 If workbench packages fail to attach, you now get an explicit startup message with reinstall guidance instead of a silent skip.
 

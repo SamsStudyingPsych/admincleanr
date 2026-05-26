@@ -18,10 +18,7 @@ LazyData: true
 RoxygenNote: 7.3.3
 URL: https://github.com/SamsStudyingPsych/admincleanr
 BugReports: https://github.com/SamsStudyingPsych/admincleanr/issues
-Remotes:
-    SamsStudyingPsych/admincleanr/admincleanr_crunch
 Imports:
-    admincleanr_crunch,
     arrow,
     data.table,
     DBI,
