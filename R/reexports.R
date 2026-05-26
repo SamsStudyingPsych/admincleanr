@@ -1,3 +1,49 @@
+# ── admincleanr_crunch re-exports ─────────────────────────────────────────────
+# These three functions are implemented in the companion admincleanr_crunch
+# package and re-exported here so that library(admincleanr) is sufficient; no
+# admincleanr_crunch:: prefix or separate library() call is needed.
+
+#' Coerce a vector to Date/POSIXct by heuristic format detection
+#'
+#' Re-exported from \pkg{admincleanr_crunch}.
+#' See \code{\link[admincleanr_crunch]{coerce_best_datetime}} for full
+#' documentation, parameter details, and limitations.
+#'
+#' @inheritParams admincleanr_crunch::coerce_best_datetime
+#' @return \code{Date} or \code{POSIXct} vector aligned with \code{x}.
+#' @seealso \code{\link[admincleanr_crunch]{coerce_best_datetime}}
+#' @importFrom admincleanr_crunch coerce_best_datetime
+#' @export
+coerce_best_datetime <- admincleanr_crunch::coerce_best_datetime
+
+#' Apply heuristic datetime coercion to selected data frame columns
+#'
+#' Re-exported from \pkg{admincleanr_crunch}.
+#' See \code{\link[admincleanr_crunch]{coerce_best_datetime_cols}} for full
+#' documentation.
+#'
+#' @inheritParams admincleanr_crunch::coerce_best_datetime_cols
+#' @return \code{data} with selected columns coerced.
+#' @seealso \code{\link[admincleanr_crunch]{coerce_best_datetime_cols}}
+#' @importFrom admincleanr_crunch coerce_best_datetime_cols
+#' @export
+coerce_best_datetime_cols <- admincleanr_crunch::coerce_best_datetime_cols
+
+#' Pairwise Jaccard overlap of distinct column values between two tables
+#'
+#' Re-exported from \pkg{admincleanr_crunch}.
+#' See \code{\link[admincleanr_crunch]{pairwise_column_overlap}} for full
+#' documentation.
+#'
+#' @inheritParams admincleanr_crunch::pairwise_column_overlap
+#' @return A \code{data.frame} sorted by descending \code{jaccard}.
+#' @seealso \code{\link[admincleanr_crunch]{pairwise_column_overlap}}
+#' @importFrom admincleanr_crunch pairwise_column_overlap
+#' @export
+pairwise_column_overlap <- admincleanr_crunch::pairwise_column_overlap
+
+# ── magrittr re-export ────────────────────────────────────────────────────────
+
 #' Pipe operator (re-exported from \pkg{magrittr})
 #'
 #' \code{library(admincleanr)} attaches this symbol explicitly: \code{exportPattern("^[[:alpha:]]+")}

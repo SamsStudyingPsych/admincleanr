@@ -25,7 +25,9 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 ### Companion packages (same GitHub repo)
 
 - **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
+  Installed automatically as a dependency of `admincleanr`. After `library(admincleanr)` you can call
+  `coerce_best_datetime()`, `coerce_best_datetime_cols()`, and `pairwise_column_overlap()` directly
+  without any prefix.
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
 

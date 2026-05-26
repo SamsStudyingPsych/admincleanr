@@ -143,7 +143,7 @@ coerce_best_datetime(x, quiet = FALSE)
 
 ## 5. Candidate keys when you are unsure
 
-`pairwise_column_overlap()` (from `admincleanr_crunch`) compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
+`pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
 
 If you use a different **matrix / ranking** method in-house, consider contributing it behind a generic name (no employer-specific labels in examples). The maintainer can wire it in once you share a sanitized pattern.
 
