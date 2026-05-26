@@ -20,6 +20,7 @@
 # --- Tidyverse: Dates (Lubridate) ---
 #' @importFrom lubridate year month day wday quarter semester
 #' @importFrom lubridate ymd mdy dmy ymd_hms
+#' @importFrom lubridate as_datetime parse_date_time
 #' @importFrom lubridate floor_date ceiling_date round_date
 #' @importFrom lubridate today now
 #' @importFrom lubridate interval %within%
