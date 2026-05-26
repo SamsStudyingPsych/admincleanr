@@ -22,15 +22,6 @@ The workbench stack auto-attaches by default in normal console, `Rscript`, and b
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs). After `library(admincleanr)`, you can call every exported helper by name; the `admincleanr::` prefix is only required when you deliberately skip attaching the package.
 
-### Companion packages (same GitHub repo)
-
-- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  The core helpers are exported by `admincleanr`, so after `library(admincleanr)` you can call
-  `coerce_best_datetime()`, `coerce_best_datetime_cols()`, and `pairwise_column_overlap()` directly
-  without any prefix.
-- **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
-
 ## Staying up to date
 
 Re-run `pak::pak` whenever you pull changes from GitHub:
@@ -60,6 +51,8 @@ If workbench packages fail to attach, you now get an explicit startup message wi
 - **I/O helpers:** `read_data_file()` by extension, `read_parquet_with_date()` with a quick mtime message, `clean_names_trim_ws()`, and `squish_character_columns()` (newline/whitespace cleanup after SQL pulls).
 - **Time helpers:** `parse_time_to_mins()`, `ts_to_weekly_mins()` for clock / weekly-offset math.
 - **Excel exports:** `export_formatted_excel()`, `save_to_excel_multisheet_formatted()`.
+- **Datetime guessing:** `coerce_best_datetime()` and `coerce_best_datetime_cols()` try several parse orders and pick the best fit (heuristic, for exploration).
+- **Column-overlap scoring:** `pairwise_column_overlap()` ranks candidate join keys by Jaccard overlap on distinct values.
 
 Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 

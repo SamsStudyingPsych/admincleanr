@@ -1,7 +1,7 @@
 Package: admincleanr
 Type: Package
 Title: Administrative Data Cleaning and Record Linkage Helpers
-Version: 0.1.8
+Version: 0.2.0
 Authors@R: c(
     person("Samuel", "Barans",
            email = "sam.a.barans@gmail.com",

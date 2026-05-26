@@ -10,7 +10,7 @@ Compressed summary of priorities discussed for **admincleanr** and surrounding p
 
 ## Repository layout
 
-The default install is **`admincleanr`**. **`admincleanr_crunch`** hosts heuristics meant for rapid exploration; **`admincleanr_pipe`** will collect lean, explicit parsers and checks as APIs settle. Multi-schema Oracle environments favour keeping connection details local while sharing only the R transformations that sit *after* extracts.
+The single install is **`admincleanr`**, which includes both core cleaning helpers and exploratory heuristics (datetime guessing, column-overlap scoring). Multi-schema Oracle environments favour keeping connection details local while sharing only the R transformations that sit *after* extracts.
 
 ## Practical stack
 

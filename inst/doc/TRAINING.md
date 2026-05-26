@@ -4,11 +4,9 @@ This page is meant to be read in a browser **or** from your IDE via `admincleanr
 
 Keep **`docs/TRAINING.md`** and **`inst/doc/TRAINING.md`** in sync when editing training content (they should match at release so offline help matches GitHub).
 
-**Calling helpers without the `admincleanr::` prefix:** run `library(admincleanr)` once per session (or add it to a project startup script). Every **exported** function is then on the search path by name—for example `squish_character_columns()` instead of `admincleanr::squish_character_columns()`.
+**Calling helpers without prefix:** run `library(admincleanr)` once per session (or add it to a project startup script). Every **exported** function is then on the search path by name—for example `squish_character_columns()` instead of `admincleanr::squish_character_columns()`.
 
 Keep the `package::function()` form when you **choose not** to attach the package (another package you are writing, a one-off call from a script that has not called `library(admincleanr)`, or disambiguation).
-
-**Sibling packages:** the core `admincleanr_crunch` helpers are exported by `admincleanr` directly, so you do not need a companion package prefix for day-to-day use. Keep the `package::function()` form only when you deliberately avoid `library(admincleanr)` or need disambiguation.
 
 ---
 
@@ -19,13 +17,7 @@ Keep the `package::function()` form when you **choose not** to attach the packag
 devtools::install_github("SamsStudyingPsych/admincleanr")
 ```
 
-Fast / heuristic tools (datetime guessing, join-overlap exploration) are exported by the main package, so after loading `admincleanr` you can call `coerce_best_datetime()` and `pairwise_column_overlap()` directly.
-
-Planned **validation-first / lean pipeline** patterns will accumulate under `admincleanr_pipe` (scaffold today):
-
-```r
-devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")
-```
+All helpers—including datetime guessing and column-overlap scoring—are included in the main package.
 
 Load the package once per session, then call exported helpers by name (no `admincleanr::` prefix needed). In normal console, `Rscript`, and batch sessions, the usual **tidyverse / janitor / readxl / DBI / odbc** stack attaches automatically; re-exports also cover common pipeline verbs when autoload is disabled:
 
@@ -44,27 +36,26 @@ To disable automatic workbench attach, set `options(admincleanr.autoload_workben
 
 ---
 
-## 2. Mental model: three layers
+## 2. Mental model: exploratory vs production
 
-| Layer | Role | When to use |
+| Style | Role | When to use |
 | ----- | ---- | ----------- |
-| **admincleanr** | Shared cleaning, linkage helpers, I/O, plots, environment hygiene | Default starting point. |
-| **admincleanr_pipe** | Smallest, most stable code paths; explicit contracts; resilient to upstream format drift | Production extracts, refreshable jobs, anything you must trust after a DBA change. |
-| **admincleanr_crunch** | Heuristics: try parse orders, explore candidate join keys, fuzzy matching | Ad hoc investigation, new feeds, unknown column semantics. |
+| **Exploratory / heuristic** | Try parse orders, explore candidate join keys, fuzzy matching | Ad hoc investigation, new feeds, unknown column semantics. |
+| **Production / explicit** | Named formats, explicit contracts, resilient to upstream format drift | Production extracts, refreshable jobs, anything you must trust after a DBA change. |
 
-Heuristics trade **CPU and ambiguity** for speed of iteration. **Pipe**-style code should name formats, keys, and transforms explicitly once you know them.
+Heuristics trade **CPU and ambiguity** for speed of iteration. Production-style code should name formats, keys, and transforms explicitly once you know them.
 
-### Linkage workflow: “blocking” vs “fuzzy in R”
+### Linkage workflow: "blocking" vs "fuzzy in R"
 
 **Blocking** means using **exact** keys (or tight windows: date range + program + geography) in **SQL** so each record only competes against a **small** candidate set. You then bring **thousands or millions of candidate pairs** (not full cross-products) into R for similarity or fuzzy joins.
 
 **Fuzzy-heavy in R** means shipping **large** unmatched extracts and letting string distance or similarity run on wide sets. That can work for one-off exploration but scales poorly and is harder to audit.
 
-The question is only: *after you block, roughly how many rows or pairs are left?* That number guides settings like `max_dist` and whether a step belongs in **admincleanr_crunch** (explore) or **admincleanr_pipe** (controlled production pattern).
+The question is only: *after you block, roughly how many rows or pairs are left?* That number guides settings like `max_dist` and whether a step belongs in exploratory heuristics or controlled production patterns.
 
 ---
 
-## 3. Core **admincleanr** flows
+## 3. Core flows
 
 Assumes `library(admincleanr)` (see section 1).
 
@@ -121,9 +112,7 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 
 ---
 
-## 4. **admincleanr_crunch**: datetime guessing
-
-The core crunch helpers below are exported by `admincleanr`, so `library(admincleanr)` is enough to call them without a prefix.
+## 4. Datetime guessing
 
 When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
 
@@ -160,8 +149,8 @@ Typical pattern: one **DSN or TNS** per environment, **different `UID`/`PWD` or 
 
 Patterns that help **your** collaborators without weakening security:
 
-- **Good to share:** Statistical or structural workflows (push-down filtering, Parquet staging, validating row counts after refresh, generic “blocking then fuzzy match” sequencing), synthetic or obviously fake mini examples, lessons about ODBC/driver quirks **without** hostnames, service names, or account names.
-- **Avoid in public issues, gists, or chat logs:** Passwords, tokens, `UID`/`PWD`, full TNS/DSN strings, internal server or scan hostnames, schema maps that fingerprint a specific environment, real or deduplicated-looking **record-level** values (including “anonymized” IDs that are still stable keys), and screenshots of query results.
+- **Good to share:** Statistical or structural workflows (push-down filtering, Parquet staging, validating row counts after refresh, generic "blocking then fuzzy match" sequencing), synthetic or obviously fake mini examples, lessons about ODBC/driver quirks **without** hostnames, service names, or account names.
+- **Avoid in public issues, gists, or chat logs:** Passwords, tokens, `UID`/`PWD`, full TNS/DSN strings, internal server or scan hostnames, schema maps that fingerprint a specific environment, real or deduplicated-looking **record-level** values (including "anonymized" IDs that are still stable keys), and screenshots of query results.
 - **Examples in docs:** Prefer abstract labels (`subject_key`, `encounter_dt`, `program_cd`) and narratives that fit **public-health or government administrative** data broadly—not names of systems, vendors, or programs tied to one agency.
 
 Public workflow notes are welcome when framed at that level; they make the package easier to teach without widening an attack surface.
@@ -170,7 +159,7 @@ Public workflow notes are welcome when framed at that level; they make the packa
 
 ## 8. Roadmap
 
-- Move **pipe-hardened** readers and validators into `admincleanr_pipe` as APIs stabilize.  
-- Extend **crunch** heuristics (with caps and diagnostics) based on sanitized feedback.  
+- Add production-hardened readers and validators as APIs stabilise.
+- Extend heuristics (with caps and diagnostics) based on sanitized feedback.  
 
 For questions about training content only, use the contact on the main **README**.
