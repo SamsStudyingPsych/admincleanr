@@ -20,13 +20,6 @@ admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from 
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
-### Companion packages (same GitHub repo)
-
-- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
-- **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
-  `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
-
 ## Staying up to date
 
 Re-run `pak::pak` whenever you pull changes from GitHub:
@@ -47,13 +40,16 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 - **Fuzzy joins (optional):** install `fuzzyjoin` and `stringdist`, then use `fuzzy_left_join_stringdist()` for approximate key matches (typos, formatting drift).
 - **I/O helpers:** `read_data_file()` by extension, `read_parquet_with_date()` with a quick mtime message, `clean_names_trim_ws()`, and `squish_character_columns()` (newline/whitespace cleanup after SQL pulls).
 - **Time helpers:** `parse_time_to_mins()`, `ts_to_weekly_mins()` for clock / weekly-offset math.
+- **Heuristic datetime coercion:** `coerce_best_datetime()` and `coerce_best_datetime_cols()` try candidate parse orders and pick the best fit — great for ad hoc exploration on unknown date formats.
+- **Join-key exploration:** `pairwise_column_overlap()` ranks candidate join columns by Jaccard overlap on distinct value sets.
 - **Excel exports:** `export_formatted_excel()`, `save_to_excel_multisheet_formatted()`.
 
 Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
+library(admincleanr)
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +73,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. After `library(admincleanr)`, every exported function is available directly — no `admincleanr::` prefix required. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
 
 ---
 

@@ -1,7 +1,7 @@
 Package: admincleanr
 Type: Package
 Title: Administrative Data Cleaning and Record Linkage Helpers
-Version: 0.1.6
+Version: 0.2.0
 Authors@R: c(
     person("Samuel", "Barans",
            email = "sam.a.barans@gmail.com",
@@ -10,7 +10,8 @@ Authors@R: c(
 Description: Helpers for messy administrative extracts: fuzzy string scoring,
     ID hygiene, environment cleanup for large-session work in R, parquet/Excel I/O,
     quick exploratory plots, browser-based onboarding via admincleanr_training(),
-    and heuristic datetime helpers in the sibling admincleanr_crunch package.
+    heuristic datetime coercion, and pairwise column-overlap scoring for candidate
+    joins.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
