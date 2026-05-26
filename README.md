@@ -8,21 +8,29 @@ Install from GitHub:
 # install.packages("devtools")
 # install.packages("pak")
 pak::pak("SamsStudyingPsych/admincleanr")
+library(admincleanr)
+```
+
+After `library(admincleanr)`, exported helpers can be called directly:
+
+```r
+df <- squish_character_columns(df)
+coerce_best_datetime(my_dates, quiet = FALSE)
 ```
 
 ### Training — copy-paste in RStudio / Positron
 
 ```r
 library(admincleanr)
-admincleanr_training()         # browser → GitHub training page
-admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
+admincleanr_training()         # browser -> GitHub training page
+admincleanr_training("local") # IDE -> bundled TRAINING.md (needs install from GitHub)
 ```
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs).
 
 ### Companion packages (same GitHub repo)
 
-- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins.  
+- **`admincleanr_crunch`** — exploratory datetime guessing and column-overlap scoring for candidate joins. These helpers are also exported by the main package so `library(admincleanr)` is enough for unqualified calls.  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")`
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
@@ -53,7 +61,7 @@ Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +85,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)`, call helpers directly (`squish_character_columns()`, `coerce_best_datetime()`, etc.). The package still supports explicit namespacing (`admincleanr::squish_character_columns()`) when you want to call one helper without attaching the package. R still requires `library(admincleanr)` once in each new session before unqualified calls are available.
 
 ---
 
