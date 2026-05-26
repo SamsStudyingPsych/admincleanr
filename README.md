@@ -47,7 +47,7 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 
 After `library(admincleanr)`, use exported helpers by name — for example `squish_character_columns()`, not `admincleanr::squish_character_columns()`. The `::` form is optional (handy when you have not attached the package yet).
 
-In normal sessions, `library(admincleanr)` also tries to attach the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`). In interactive sessions, it also attaches **admincleanr_crunch** when installed, so those helpers are available without a package prefix too. Turn those off with `options(admincleanr.autoload_workbench = FALSE)` or `options(admincleanr.autoload_crunch = FALSE)`.
+In normal sessions, `library(admincleanr)` also tries to attach the usual workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`) and installed companion packages, so those helpers are available without a package prefix too. Turn those off with `options(admincleanr.autoload_workbench = FALSE)` or `options(admincleanr.autoload_companions = FALSE)`.
 
 If workbench packages fail to attach, you now get an explicit startup message with reinstall guidance instead of a silent skip.
 

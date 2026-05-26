@@ -23,8 +23,15 @@
     return(invisible())
   }
 
+  # Avoid attaching extra packages during `R CMD check` on this package
+  # (startup cost, dependency ordering, and cleaner example runs).
+  checking_self <- identical(
+    Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = ""),
+    "admincleanr"
+  )
+
   autoload_companions <- getOption("admincleanr.autoload_companions", TRUE)
-  if (isTRUE(autoload_companions)) {
+  if (isTRUE(autoload_companions) && !checking_self) {
     try(
       .admincleanr_attach_companions(),
       silent = TRUE
@@ -32,13 +39,6 @@
   }
   autoload_option <- getOption("admincleanr.autoload_workbench")
   autoload <- if (is.null(autoload_option)) TRUE else isTRUE(autoload_option)
-
-  # Avoid attaching the full tidyverse stack during `R CMD check` on this package
-  # (startup cost, dependency ordering, and cleaner example runs).
-  checking_self <- identical(
-    Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = ""),
-    "admincleanr"
-  )
 
   if (autoload && !checking_self) {
     tryCatch(
