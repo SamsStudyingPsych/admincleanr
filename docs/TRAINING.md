@@ -31,13 +31,20 @@ Planned **validation-first / lean pipeline** patterns will accumulate under `adm
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")
 ```
 
-Open this training page anytime:
+Load the package once per session (interactive R attaches the usual **tidyverse / janitor / readxl / DBI / odbc** stack automatically; re-exports cover common verbs even when autoload is off):
 
 ```r
 library(admincleanr)
+```
+
+Open this training page anytime:
+
+```r
 admincleanr_training()              # browser (GitHub-rendered)
 admincleanr_training("local")       # open bundled TRAINING.md in IDE when supported
 ```
+
+If the workbench stack did not attach, run `admincleanr_attach_workbench()` or set `options(admincleanr.autoload_workbench = TRUE)` before `library(admincleanr)`.
 
 ---
 
@@ -63,11 +70,7 @@ The question is only: *after you block, roughly how many rows or pairs are left?
 
 ## 3. Core **admincleanr** flows
 
-Attach once, then call helpers by name (see the unprefixed-calls note at the top of this page):
-
-```r
-library(admincleanr)
-```
+Assumes `library(admincleanr)` (see §1).
 
 ### 3.1 After SQL: text fields
 
@@ -124,10 +127,12 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 
 ## 4. **admincleanr_crunch**: datetime guessing
 
+After `library(admincleanr_crunch)`:
+
 When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
 
 ```r
-admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
+coerce_best_datetime(x, quiet = FALSE)
 ```
 
 `coerce_best_datetime_cols()` applies the same idea column-wise.
@@ -138,7 +143,7 @@ admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
 
 ## 5. Candidate keys when you are unsure
 
-`admincleanr_crunch::pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
+`pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
 
 If you use a different **matrix / ranking** method in-house, consider contributing it behind a generic name (no employer-specific labels in examples). The maintainer can wire it in once you share a sanitized pattern.
 

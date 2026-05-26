@@ -13,10 +13,12 @@ pak::pak("SamsStudyingPsych/admincleanr")
 ### Training — copy-paste in RStudio / Positron
 
 ```r
-library(admincleanr)
+library(admincleanr)           # exports + common dplyr/DBI verbs; autoloads tidyverse stack in interactive R
 admincleanr_training()         # browser → GitHub training page
 admincleanr_training("local") # IDE → bundled TRAINING.md (needs install from GitHub)
 ```
+
+If the workbench stack did not attach (non-interactive session), run `admincleanr_attach_workbench()` or set `options(admincleanr.autoload_workbench = TRUE)` before `library(admincleanr)`.
 
 Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then `admincleanr_training()`. Training source: `docs/TRAINING.md` (mirrored in `inst/doc/` for installs). After `library(admincleanr)`, you can call every exported helper by name; the `admincleanr::` prefix is only required when you deliberately skip attaching the package.
 
@@ -79,7 +81,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix is optional whenever you have run `library(admincleanr)` (or otherwise attached the package).
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)` you can call helpers by name (no `admincleanr::` prefix required). The package adds documentation, versioning, re-exported pipeline verbs, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts. The `admincleanr::` prefix remains available when you choose not to attach the package.
 
 ---
 

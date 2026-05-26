@@ -7,9 +7,9 @@
 #' @return \code{NULL} invisibly.
 #' @section Workflow integration:
 #' \itemize{
-#'   \item Set \code{options(admincleanr.autoload_workbench = TRUE)} before
-#'     \code{library(admincleanr)} to auto-attach in interactive sessions (see
-#'     package attach hook).
+#'   \item By default, \code{library(admincleanr)} auto-attaches this stack in
+#'     interactive sessions. Set \code{options(admincleanr.autoload_workbench = TRUE)}
+#'     before \code{library(admincleanr)} to attach in non-interactive jobs too.
 #'   \item Set \code{options(admincleanr.autoload_workbench = FALSE)} on servers
 #'     or \code{R CMD check} contexts where silent attach is undesirable.
 #' }
@@ -19,12 +19,25 @@
 #' admincleanr_attach_workbench()
 #' }
 admincleanr_attach_workbench <- function() {
+  workbench_packages <- c("tidyverse", "janitor", "readxl", "DBI", "odbc")
+  missing_packages <- workbench_packages[
+    !vapply(workbench_packages, requireNamespace, logical(1), quietly = TRUE)
+  ]
+
+  if (length(missing_packages) > 0) {
+    stop(
+      "Cannot attach admincleanr workbench package(s): ",
+      paste(missing_packages, collapse = ", "),
+      ". Reinstall admincleanr with dependencies, e.g. ",
+      "pak::pak(\"SamsStudyingPsych/admincleanr\", upgrade = \"always\").",
+      call. = FALSE
+    )
+  }
+
   suppressPackageStartupMessages({
-    library(tidyverse)
-    library(janitor)
-    library(readxl)
-    library(DBI)
-    library(odbc)
+    for (pkg in workbench_packages) {
+      library(pkg, character.only = TRUE)
+    }
   })
   invisible()
 }

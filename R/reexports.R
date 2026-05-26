@@ -14,3 +14,55 @@
 #' @importFrom magrittr %>%
 #' @export
 magrittr::`%>%`
+
+#' @importFrom dplyr mutate
+#' @export
+dplyr::mutate
+
+#' @importFrom dplyr filter
+#' @export
+dplyr::filter
+
+#' @importFrom dplyr select
+#' @export
+dplyr::select
+
+#' @importFrom dplyr left_join
+#' @export
+dplyr::left_join
+
+#' @importFrom dplyr arrange
+#' @export
+dplyr::arrange
+
+#' @importFrom dplyr group_by
+#' @export
+dplyr::group_by
+
+#' @importFrom dplyr summarise
+#' @export
+dplyr::summarise
+
+#' @importFrom dplyr pull
+#' @export
+dplyr::pull
+
+#' @importFrom janitor clean_names
+#' @export
+janitor::clean_names
+
+#' @importFrom readxl read_excel
+#' @export
+readxl::read_excel
+
+#' @importFrom DBI dbConnect
+#' @export
+DBI::dbConnect
+
+#' @importFrom DBI dbGetQuery
+#' @export
+DBI::dbGetQuery
+
+#' @importFrom DBI dbDisconnect
+#' @export
+DBI::dbDisconnect
