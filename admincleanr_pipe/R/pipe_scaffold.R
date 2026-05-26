@@ -8,7 +8,7 @@
 #' @section Workflow integration:
 #' \itemize{
 #'   \item Reserve this namespace for **production-hardened** transforms (explicit parsers, contract checks) as they are promoted out of exploratory scripts.
-#'   \item See \code{admincleanr::admincleanr_training()} for the planned split between \pkg{admincleanr_crunch} heuristics and pipe-stable code.
+#'   \item See \link[admincleanr]{admincleanr_training} for the planned split between \pkg{admincleanr_crunch} heuristics and pipe-stable code.
 #' }
 #'
 #' @return `TRUE` invisibly.
