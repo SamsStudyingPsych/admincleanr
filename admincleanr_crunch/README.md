@@ -8,6 +8,7 @@ Install from this monorepo:
 
 ```r
 devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_crunch")
+library(admincleanr_crunch)
 ```
 
 Main entry points:
