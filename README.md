@@ -27,6 +27,10 @@ Forks: `options(admincleanr.training_url = "<your TRAINING.md blob URL>")` then 
 - **`admincleanr_pipe`** — scaffold for validation-first, migration-friendly pipeline code (implementations will move here over time).  
   `pak::pak("SamsStudyingPsych/admincleanr", subdir = "admincleanr_pipe")`
 
+After `library(admincleanr)`, exported `admincleanr` functions are available without
+an `admincleanr::` prefix. If `admincleanr_crunch` is installed, its main helper
+functions are also forwarded through `admincleanr` so you can call them unqualified.
+
 ## Staying up to date
 
 Re-run `pak::pak` whenever you pull changes from GitHub:
@@ -53,7 +57,7 @@ Quick pattern after pulling from a database (`DBI`), before writing Parquet:
 
 ```r
 df <- dbGetQuery(con, "SELECT ... FROM ...")
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 arrow::write_parquet(df, "out.parquet")
 ```
 
@@ -77,7 +81,7 @@ Use them together: high token overlap + low edit distance usually means a confid
 
 ## Package vs pasted functions
 
-Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. The package adds namespacing (`admincleanr::`), documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
+Exported functions compile to the same bytecode as equivalent code you paste into a `.R` file. After `library(admincleanr)`, you can call them directly; using `admincleanr::` is optional when you want an explicit namespace in a shared script. The package still adds documentation, versioning, and **dependency declarations** (`Imports` / `Suggests`) so `install_github` resolves what you need. Runtime speed is essentially the same; the win is reproducibility and sharing without copying ad hoc scripts.
 
 ---
 

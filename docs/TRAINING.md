@@ -1,6 +1,6 @@
 # Training: using **admincleanr** in day-to-day work
 
-This page is meant to be read in a browser **or** from your IDE via `admincleanr::admincleanr_training("local")` (uses the copy shipped in the installed package). It stays **generic**—no employer field names or schema detail.
+This page is meant to be read in a browser **or** from your IDE via `admincleanr_training("local")` after `library(admincleanr)` (uses the copy shipped in the installed package). It stays **generic**—no employer field names or schema detail.
 
 Keep **`docs/TRAINING.md`** and **`inst/doc/TRAINING.md`** in sync when editing training content (they should match at release so offline help matches GitHub).
 
@@ -28,8 +28,9 @@ devtools::install_github("SamsStudyingPsych/admincleanr", subdir = "admincleanr_
 Open this training page anytime:
 
 ```r
-admincleanr::admincleanr_training()              # browser (GitHub-rendered)
-admincleanr::admincleanr_training("local")     # open bundled TRAINING.md in IDE when supported
+library(admincleanr)
+admincleanr_training()         # browser (GitHub-rendered)
+admincleanr_training("local")  # open bundled TRAINING.md in IDE when supported
 ```
 
 ---
@@ -61,32 +62,32 @@ The question is only: *after you block, roughly how many rows or pairs are left?
 Database text often embeds newlines. Normalize before joins or Parquet:
 
 ```r
-df <- df %>% admincleanr::squish_character_columns()
+df <- df %>% squish_character_columns()
 ```
 
 Column names from exports are often noisy; standardize and trim:
 
 ```r
-df <- df %>% admincleanr::clean_names_trim_ws()
+df <- df %>% clean_names_trim_ws()
 ```
 
 ### 3.2 Reading files by extension
 
 ```r
-admincleanr::read_data_file("extract.parquet")
-admincleanr::read_data_file("sheetful.xlsx", sheet = 1)
+read_data_file("extract.parquet")
+read_data_file("sheetful.xlsx", sheet = 1)
 ```
 
 ### 3.3 Memory and session safety
 
 ```r
-admincleanr::clean_but_keep(main_tbl, lookup_tbl)
+clean_but_keep(main_tbl, lookup_tbl)
 ```
 
 ### 3.4 Join debugging
 
 ```r
-admincleanr::cross_check_missing(df1, df2, check_var = problem_col, id_var = id_col)
+cross_check_missing(df1, df2, check_var = problem_col, id_var = id_col)
 ```
 
 ### 3.5 String similarity (explicit, not guessing)
@@ -102,7 +103,7 @@ Use **multiple** signals; they measure different things:
 Install `fuzzyjoin` and `stringdist`, then:
 
 ```r
-admincleanr::fuzzy_left_join_stringdist(left, right, by = "name", max_dist = 1)
+fuzzy_left_join_stringdist(left, right, by = "name", max_dist = 1)
 ```
 
 Tighten `max_dist` on big tables; consider blocking keys in SQL first.
@@ -111,10 +112,10 @@ Tighten `max_dist` on big tables; consider blocking keys in SQL first.
 
 ## 4. **admincleanr_crunch**: datetime guessing
 
-When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production.
+When you **do not** yet know the datetime format, `coerce_best_datetime()` samples non-missing values, tries a **fixed menu** of `lubridate::parse_date_time` orders, and picks the order with the **fewest parse failures** on non-empty strings. It is **not** a substitute for an explicit format in production. Install `admincleanr_crunch` from this repository to use these forwarded helpers through `admincleanr`.
 
 ```r
-admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
+coerce_best_datetime(x, quiet = FALSE)
 ```
 
 `coerce_best_datetime_cols()` applies the same idea column-wise.
@@ -125,7 +126,7 @@ admincleanr_crunch::coerce_best_datetime(x, quiet = FALSE)
 
 ## 5. Candidate keys when you are unsure
 
-`admincleanr_crunch::pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align—not as proof of a business key.
+`pairwise_column_overlap()` compares **sets of distinct values** (sample-capped) between columns of two tables and returns a **Jaccard-like** overlap score. Use it to **rank** which ID-like columns might align, not as proof of a business key.
 
 If you use a different **matrix / ranking** method in-house, consider contributing it behind a generic name (no employer-specific labels in examples). The maintainer can wire it in once you share a sanitized pattern.
 
