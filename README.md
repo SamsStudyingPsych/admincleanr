@@ -37,6 +37,14 @@ pak::pak("SamsStudyingPsych/admincleanr", upgrade = "always")
 
 `upgrade = "always"` refreshes dependency packages as well (`remotes`/Pak offer similar workflows). For reproducibility in production jobs, pin a commit or Git tag once you validate a release.
 
+If `library(admincleanr)` does not auto-attach the workbench stack (`tidyverse`, `janitor`, `readxl`, `DBI`, `odbc`), run:
+
+```r
+admincleanr_attach_workbench()
+```
+
+If dependencies are missing, `admincleanr` now prints an explicit startup message with reinstall guidance instead of failing silently.
+
 ---
 
 ## Highlights
