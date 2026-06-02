@@ -622,18 +622,53 @@ lazy_hist <- function(df, var_string, binwidth_val = 30) {
 #' \dontrun{
 #' save_to_excel_multisheet("report.xlsx", c("Sheet1", "Sheet2"), list(df1, df2))
 #' }
-save_to_excel_multisheet <- function(filename, sheet_names, data_list) {
-  if (length(sheet_names) != length(data_list)) stop("Error: The number of sheet names must equal the number of dataframes.")
-  if (!is.list(data_list) || is.data.frame(data_list)) stop("Error: 'data_list' must be a list of dataframes.")
-  wb <- createWorkbook()
-  for (i in 1:length(data_list)) {
-    addWorksheet(wb, sheetName = sheet_names[i])
-    writeData(wb, sheet = sheet_names[i], x = data_list[[i]])
+#' Save Multiple Dataframes to an Excel Workbook with Formatting
+#'
+#' @param file_path Character string naming the output file.
+#' @param sheet_names Character vector of sheet names.
+#' @param df_list List of dataframes to write to the sheets.
+#' @export
+save_to_excel_multisheet <- function(file_path, sheet_names, df_list) {
+  if (!requireNamespace("openxlsx", quietly = TRUE)) {
+    stop("The 'openxlsx' package is required but not installed.")
   }
-  tryCatch({
-    saveWorkbook(wb, file = filename, overwrite = TRUE)
-    cat(paste("Excel file '", filename, "' created successfully.\n", sep=""))
-  }, error = function(e) cat(paste("Error saving file '", filename, "': ", e$message, "\n", sep="")))
+  
+  if (length(sheet_names) != length(df_list)) {
+    stop("The number of sheet names must match the number of dataframes.")
+  }
+
+  # 1. Initialize workbook and define the currency style
+  wb <- openxlsx::createWorkbook()
+  currency_style <- openxlsx::createStyle(numFmt = "$#,##0.00")
+
+  # 2. Loop through and process each sheet
+  for (i in seq_along(df_list)) {
+    df <- df_list[[i]]
+    sheet_name <- sheet_names[i]
+    
+    # Add sheet and write raw data
+    openxlsx::addWorksheet(wb, sheetName = sheet_name)
+    openxlsx::writeData(wb, sheet = sheet_name, x = df)
+    
+    # 3. Dynamically identify any columns containing "payment"
+    payment_cols <- grep("payment", names(df), ignore.case = TRUE)
+    
+    # 4. Apply currency formatting to the data rows of those columns
+    if (length(payment_cols) > 0) {
+      openxlsx::addStyle(
+        wb = wb, 
+        sheet = sheet_name, 
+        style = currency_style, 
+        rows = 2:(nrow(df) + 1), # 2 to N+1 safely skips the header row
+        cols = payment_cols, 
+        gridExpand = TRUE
+      )
+    }
+  }
+  
+  # 5. Execute save
+  openxlsx::saveWorkbook(wb, file = file_path, overwrite = TRUE)
+  message("Successfully saved multisheet workbook to: ", file_path)
 }
 
 
